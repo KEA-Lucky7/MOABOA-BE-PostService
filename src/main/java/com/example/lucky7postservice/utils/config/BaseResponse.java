@@ -1,0 +1,39 @@
+package com.example.lucky7postservice.utils.config;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+
+@Getter
+@AllArgsConstructor
+@JsonPropertyOrder({"isSuccess", "code", "message", "result"})
+// BaseResponse
+public class BaseResponse<T> {
+    @Schema(description = "응답 코드", example = "200")
+    private String code;
+    @Schema(description = "응답 메세지", example = "요청에 성공하였습니다.")
+    private String message;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private T data;
+
+    // Request success
+    public BaseResponse(T data) {
+        this.data = data;
+    }
+
+    // Request Fail
+    public BaseResponse(BaseResponseStatus status) {
+        this.message = status.getMessage();
+        this.code = status.getCode();
+    }
+
+    public BaseResponse(BaseResponseStatus invalidParameters, String errorMessage) {
+        this.code = invalidParameters.getCode();
+        this.message = errorMessage;
+    }
+}
+

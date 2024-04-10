@@ -30,16 +30,31 @@ public class PostService {
     private final WalletRepository walletRepository;
 
     @Transactional
-    public PostPostRes postPost(Long memberId, PostPostReq postReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인, 임시저장 했던 글에 대한 처리
+    public PostPostRes postPost(Long postId, Long memberId, PostPostReq postReq) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
         Long blogId = 1L;
 
-        Post newPost = postRepository.save(Post.of(memberId, blogId,
-                postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
-                PostState.ACTIVE));
-        Long postId = newPost.getId();
+        if(postId == 0) {
+            Post newPost = postRepository.save(Post.of(memberId, blogId,
+                    postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
+                    PostState.ACTIVE));
+            postId = newPost.getId();
+        } else {
+            // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
+            Post post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
+                    .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-        // TODO : 이미 저장되어 있는 해시태그, 소비 내역을 어떻게 처리할 건지 생각 필요
+            postId = post.getId();
+            post.setPostType(postReq.getPostType());
+            post.setTitle(postReq.getTitle());
+            post.setContent(postReq.getContent());
+            post.setThumbnail(postReq.getThumbnail());
+            post.setPostState(PostState.ACTIVE);
+
+            // 이미 저장되어 있는 해시태그를 삭제
+            hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));
+        }
+
         // 해시태그 저장
         for(String hashtag : postReq.getHashtagList()) {
             hashtagRepository.save(Hashtag.of(postId, hashtag.trim()));
@@ -48,7 +63,7 @@ public class PostService {
         // 소비 내역 저장
         for(WalletReq wallet : postReq.getWalletList()) {
             walletRepository.save(Wallet.of(memberId, postId,
-                    wallet.getMemo(), wallet.getAmount(), wallet.getWalletType()));
+                    wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
         }
 
         return new PostPostRes(postId);

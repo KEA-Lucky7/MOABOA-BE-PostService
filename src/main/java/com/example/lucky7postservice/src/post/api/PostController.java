@@ -28,9 +28,9 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
     })
-    @PostMapping("/{memberId}")
-    public BaseResponse<PostPostRes> postPost(@PathVariable Long memberId, @Valid @RequestBody PostPostReq postReq) throws BaseException {
-        return new BaseResponse<>(postService.postPost(memberId, postReq));
+    @PostMapping("/{postId}/{memberId}")
+    public BaseResponse<PostPostRes> postPost(@PathVariable Long postId, @PathVariable Long memberId, @Valid @RequestBody PostPostReq postReq) throws BaseException {
+        return new BaseResponse<>(postService.postPost(postId, memberId, postReq));
     }
 
     /* 글 임시 저장하기 API */
@@ -43,7 +43,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
             })
-    @PostMapping("/{postId}/{memberId}")
+    @PostMapping("/{postId}/temporary/{memberId}")
     public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @PathVariable Long memberId, @Valid @RequestBody SavePostReq postReq) throws BaseException {
         return new BaseResponse<>(postService.savePost(postId, memberId, postReq));
     }

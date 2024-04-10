@@ -1,19 +1,27 @@
 package com.example.lucky7postservice.src.post.domain;
 
-import com.example.lucky7postservice.utils.entity.BaseEntity;
-import com.example.lucky7postservice.utils.entity.State;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.sql.Timestamp;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Getter @Setter
 @SuperBuilder
+@EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post extends BaseEntity {
+public class Post {
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
     @NotNull
     private Long memberId;
     @NotNull
@@ -25,9 +33,16 @@ public class Post extends BaseEntity {
     @NotNull
     private String content;
     private String thumbnail;
+    @CreatedDate
+    private Timestamp createdAt;
+    @LastModifiedDate
+    private Timestamp updatedAt;
+    @Enumerated(EnumType.STRING) @NotNull
+    private PostState postState;
 
     public static Post of(Long memberId, Long blogId,
-                          String postType, String title, String content, String thumbnail) {
+                          String postType, String title, String content, String thumbnail,
+                          PostState state) {
         return Post.builder()
                 .memberId(memberId)
                 .blogId(blogId)
@@ -35,7 +50,7 @@ public class Post extends BaseEntity {
                 .title(title)
                 .content(content)
                 .thumbnail(thumbnail)
-                .state(State.ACTIVE)
+                .postState(state)
                 .build();
     }
 }

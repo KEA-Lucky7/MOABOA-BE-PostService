@@ -26,11 +26,11 @@ import static lombok.AccessLevel.PROTECTED;
 public class BaseEntity {
     // common column for JPA
     @Id
-    @GeneratedValue(strategy = IDENTITY) @NotNull
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @CreatedDate @NotNull
+    @CreatedDate
     private Timestamp createdAt;
-    @LastModifiedDate @NotNull
+    @LastModifiedDate
     private Timestamp updatedAt;
     @Enumerated(EnumType.STRING) @NotNull
     private State state;

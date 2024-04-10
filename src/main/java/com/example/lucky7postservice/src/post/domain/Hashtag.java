@@ -1,38 +1,34 @@
 package com.example.lucky7postservice.src.post.domain;
 
-import com.example.lucky7postservice.utils.entity.BaseEntity;
 import com.example.lucky7postservice.utils.entity.State;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Entity
 @SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Wallet extends BaseEntity {
-    @NotNull
-    private Long memberId;
+public class Hashtag {
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
     @NotNull
     private Long postId;
     @NotNull
-    private String memo;
-    private int amount;
-    @NotNull
-    private String walletType;
+    private String content;
 
-    public static Wallet of(Long memberId, Long postId,
-                            String memo, int amount, String walletType) {
-        return Wallet.builder()
-                .memberId(memberId)
+    public static Hashtag of(Long postId, String content) {
+        return Hashtag.builder()
                 .postId(postId)
-                .memo(memo)
-                .amount(amount)
-                .walletType(walletType)
-                .state(State.ACTIVE)
+                .content(content)
                 .build();
     }
 }

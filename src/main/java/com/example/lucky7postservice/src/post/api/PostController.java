@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,15 +21,14 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostService postService;
 
-    /* 중복 체크 API */
-    @Operation(summary = "닉네임 중복 체크", description="닉네임 중복체크를 진행합니다.")
+    /* 글 작성하기 API */
+    @Operation(summary = "글 작성 API", description="글을 작성합니다")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "요청이 성공적으로 처리되었습니다."),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청입니다."),
-            @ApiResponse(responseCode = "400", description = "헤더 없음 or 토큰 불일치",
-                    content = @Content(schema = @Schema(example = "INVALID_HEADER or INVALID_TOKEN"))),
-            @ApiResponse(responseCode = "400", description = "입력값이 잘못되었습니다."),
-            @ApiResponse(responseCode = "4001", description = "중복된 이름입니다.")
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
     })
     @PostMapping("/{memberId}")
     public BaseResponse<PostPostRes> postPost(@PathVariable Long memberId, @Valid @RequestBody PostPostReq postReq) throws BaseException {

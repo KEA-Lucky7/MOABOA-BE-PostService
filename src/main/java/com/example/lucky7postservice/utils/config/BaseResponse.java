@@ -10,11 +10,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@JsonPropertyOrder({"isSuccess", "code", "message", "result"})
+@JsonPropertyOrder({"code", "message", "data"})
 // BaseResponse
 public class BaseResponse<T> {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "응답 코드", example = "200")
     private String code;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "응답 메세지", example = "요청에 성공하였습니다.")
     private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)

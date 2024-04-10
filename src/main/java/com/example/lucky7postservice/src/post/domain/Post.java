@@ -26,7 +26,6 @@ public class Post {
     private Long memberId;
     @NotNull
     private Long blogId;
-    @NotNull
     private String postType;
     @NotNull
     private String title;
@@ -51,6 +50,17 @@ public class Post {
                 .content(content)
                 .thumbnail(thumbnail)
                 .postState(state)
+                .build();
+    }
+
+    public static Post savePost(Long memberId, Long blogId,
+                                String title, String content) {
+        return Post.builder()
+                .memberId(memberId)
+                .blogId(blogId)
+                .title(title)
+                .content(content)
+                .postState(PostState.TEMPORARY)
                 .build();
     }
 }

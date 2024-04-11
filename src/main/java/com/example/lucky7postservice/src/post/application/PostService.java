@@ -13,7 +13,6 @@ import com.example.lucky7postservice.src.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.src.post.domain.repository.WalletRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
-import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,5 +89,15 @@ public class PostService {
         }
 
         return new PostPostRes(post.getId());
+    }
+
+    @Transactional
+    public String deletePost(Long postId) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+        Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        post.deletePost();
+        return "게시물을 삭제하였습니다.";
     }
 }

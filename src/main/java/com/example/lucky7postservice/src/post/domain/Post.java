@@ -70,4 +70,8 @@ public class Post extends BaseEntity {
         this.thumbnail = thumbnail;
         this.postState = PostState.ACTIVE;
     }
+
+    public void deletePost() {
+        this.postState = PostState.DELETE;
+    }
 }

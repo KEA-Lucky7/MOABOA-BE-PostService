@@ -100,4 +100,32 @@ public class PostService {
         post.deletePost();
         return "게시물을 삭제하였습니다.";
     }
+
+    @Transactional
+    public PostPostRes modifyPost(Long postId, PostPostReq postReq) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+
+        // 기존 글을 불러와서 수정함
+        Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        post.savePost(postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
+
+        // 이미 저장되어 있는 해시태그, 소비 내역을 삭제
+        hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));
+        walletRepository.deleteAll(walletRepository.findAllByPostId(postId));
+
+        // 해시태그 저장
+        for(String hashtag : postReq.getHashtagList()) {
+            hashtagRepository.save(Hashtag.of(post, hashtag.trim()));
+        }
+
+        // 소비 내역 저장
+        for(WalletReq wallet : postReq.getWalletList()) {
+            walletRepository.save(Wallet.of(1L, post,
+                    wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
+        }
+
+        return new PostPostRes(post.getId());
+    }
 }

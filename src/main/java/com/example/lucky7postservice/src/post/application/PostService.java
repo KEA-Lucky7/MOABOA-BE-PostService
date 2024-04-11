@@ -33,18 +33,17 @@ public class PostService {
     public PostPostRes postPost(Long postId, Long memberId, PostPostReq postReq) throws BaseException {
         // TODO : 멤버 존재 여부 확인
         Long blogId = 1L;
+        Post post;
 
         if(postId == 0) {
-            Post newPost = postRepository.save(Post.of(memberId, blogId,
+            post = postRepository.save(Post.of(memberId, blogId,
                     postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
                     PostState.ACTIVE));
-            postId = newPost.getId();
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
-            Post post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
+            post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            postId = post.getId();
             post.setPostType(postReq.getPostType());
             post.setTitle(postReq.getTitle());
             post.setContent(postReq.getContent());
@@ -57,33 +56,32 @@ public class PostService {
 
         // 해시태그 저장
         for(String hashtag : postReq.getHashtagList()) {
-            hashtagRepository.save(Hashtag.of(postId, hashtag.trim()));
+            hashtagRepository.save(Hashtag.of(post, hashtag.trim()));
         }
 
         // 소비 내역 저장
         for(WalletReq wallet : postReq.getWalletList()) {
-            walletRepository.save(Wallet.of(memberId, postId,
+            walletRepository.save(Wallet.of(memberId, post,
                     wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
         }
 
-        return new PostPostRes(postId);
+        return new PostPostRes(post.getId());
     }
 
     @Transactional
     public PostPostRes savePost(Long postId, Long memberId, SavePostReq postReq) throws BaseException {
         // TODO : 멤버 존재 여부 확인
         Long blogId = 1L;
+        Post post;
 
         if(postId == 0) {
-            Post newPost = postRepository.save(Post.savePost(memberId, blogId,
+            post = postRepository.save(Post.savePost(memberId, blogId,
                     postReq.getTitle(), postReq.getContent()));
-            postId = newPost.getId();
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
-            Post post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
+            post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            postId = post.getId();
             post.setTitle(postReq.getTitle());
             post.setContent(postReq.getContent());
 
@@ -93,9 +91,9 @@ public class PostService {
 
         // 해시태그를 새롭게 저장
         for(String hashtag : postReq.getHashtagList()) {
-            hashtagRepository.save(Hashtag.of(postId, hashtag.trim()));
+            hashtagRepository.save(Hashtag.of(post, hashtag.trim()));
         }
 
-        return new PostPostRes(postId);
+        return new PostPostRes(post.getId());
     }
 }

@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.src.post.domain;
 
+import com.example.lucky7postservice.utils.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -18,10 +19,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+public class Post extends BaseEntity {
     @NotNull
     private Long memberId;
     @NotNull
@@ -32,10 +30,6 @@ public class Post {
     @NotNull
     private String content;
     private String thumbnail;
-    @CreatedDate
-    private Timestamp createdAt;
-    @LastModifiedDate
-    private Timestamp updatedAt;
     @Enumerated(EnumType.STRING) @NotNull
     private PostState postState;
 

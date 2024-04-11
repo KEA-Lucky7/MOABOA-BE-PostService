@@ -30,4 +30,21 @@ public class PostLikeService {
 
         return "좋아요를 눌렀습니다.";
     }
+
+    @Transactional
+    public String dislike(Long postId) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+        // 글 존재 여부 확인
+        Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        // 글 좋아요 존재 여부 확인
+        PostLike like = postLikeRepository.findByPostIdAndMemberId(postId, 1L)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST_LIKE));
+
+        // 좋아요 삭제
+        postLikeRepository.delete(like);
+
+        return "글 좋아요를 취소하였습니다.";
+    }
 }

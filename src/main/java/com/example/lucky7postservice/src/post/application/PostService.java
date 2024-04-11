@@ -44,11 +44,7 @@ public class PostService {
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.setPostType(postReq.getPostType());
-            post.setTitle(postReq.getTitle());
-            post.setContent(postReq.getContent());
-            post.setThumbnail(postReq.getThumbnail());
-            post.setPostState(PostState.ACTIVE);
+            post.savePost(postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
 
             // 이미 저장되어 있는 해시태그를 삭제
             hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));
@@ -75,15 +71,14 @@ public class PostService {
         Post post;
 
         if(postId == 0) {
-            post = postRepository.save(Post.savePost(memberId, blogId,
+            post = postRepository.save(Post.saveTemporaryPost(memberId, blogId,
                     postReq.getTitle(), postReq.getContent()));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.setTitle(postReq.getTitle());
-            post.setContent(postReq.getContent());
+            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent());
 
             // 이미 저장되어 있는 해시태그를 삭제
             hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));

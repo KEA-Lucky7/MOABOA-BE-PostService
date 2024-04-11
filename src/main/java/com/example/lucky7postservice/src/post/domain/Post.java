@@ -1,20 +1,20 @@
 package com.example.lucky7postservice.src.post.domain;
 
 import com.example.lucky7postservice.utils.entity.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.sql.Timestamp;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
-
 @Entity
-@Getter @Setter
+@Getter
 @SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -47,7 +47,7 @@ public class Post extends BaseEntity {
                 .build();
     }
 
-    public static Post savePost(Long memberId, Long blogId,
+    public static Post saveTemporaryPost(Long memberId, Long blogId,
                                 String title, String content) {
         return Post.builder()
                 .memberId(memberId)
@@ -56,5 +56,18 @@ public class Post extends BaseEntity {
                 .content(content)
                 .postState(PostState.TEMPORARY)
                 .build();
+    }
+
+    public void modifyTemporaryPost(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public void savePost(String postType, String title, String content, String thumbnail) {
+        this.postType = postType;
+        this.title = title;
+        this.content = content;
+        this.thumbnail = thumbnail;
+        this.postState = PostState.ACTIVE;
     }
 }

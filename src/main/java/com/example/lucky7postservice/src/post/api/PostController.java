@@ -20,7 +20,7 @@ public class PostController {
     private final PostService postService;
 
     /* 글 작성하기 API */
-    @Operation(summary = "글 작성 API", description="글을 작성합니다")
+    @Operation(summary = "글 작성 API", description="글을 작성합니다, 임시 저장 없이 글을 바로 작성하는 경우에는 0을 보내주세요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),

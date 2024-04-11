@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,6 +26,12 @@ public class PostLikeService {
         // 글 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        // 글 좋아요 존재 여부 확인
+        Optional<PostLike> like = postLikeRepository.findByPostIdAndMemberId(postId, 1L);
+        if(like.isPresent()) {
+            return "이미 좋아요를 눌렀습니다";
+        }
 
         Long memberId = 1L;
         postLikeRepository.save(PostLike.of(memberId, post));

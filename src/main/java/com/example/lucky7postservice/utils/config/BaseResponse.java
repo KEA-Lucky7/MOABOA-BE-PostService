@@ -14,7 +14,7 @@ import lombok.Getter;
 // BaseResponse
 public class BaseResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Schema(description = "응답 코드", example = "200")
+    @Schema(description = "응답 코드", example = "GLB-ERR-007")
     private String code;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "응답 메세지", example = "요청에 성공하였습니다.")

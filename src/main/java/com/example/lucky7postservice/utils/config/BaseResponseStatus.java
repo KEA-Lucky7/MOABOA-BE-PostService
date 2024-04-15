@@ -24,7 +24,10 @@ public enum BaseResponseStatus {
 
     /** 글 관련 Response **/
     INVALID_POST("GLB-ERR-008", HttpStatus.NOT_FOUND, "존재하지 않는 글입니다."),
-    INVALID_POST_LIKE("GLB-ERR-009", HttpStatus.NOT_FOUND, "존재하지 않는 글 좋아요입니다.");
+    INVALID_POST_LIKE("GLB-ERR-009", HttpStatus.NOT_FOUND, "존재하지 않는 글 좋아요입니다."),
+
+    /** 댓글 관련 Response **/
+    INVALID_COMMENT("GLB-ERR-010", HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다.");
 
 
     // BaseResponseStatus Mapping

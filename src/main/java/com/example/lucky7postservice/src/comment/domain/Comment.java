@@ -40,4 +40,8 @@ public class Comment extends BaseEntity {
                 .state(State.ACTIVE)
                 .build();
     }
+
+    public void modifyComment(String content) {
+        this.content = content;
+    }
 }

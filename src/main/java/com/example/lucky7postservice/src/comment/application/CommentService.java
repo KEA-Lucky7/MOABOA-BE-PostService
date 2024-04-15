@@ -14,6 +14,7 @@ import com.example.lucky7postservice.src.post.domain.Wallet;
 import com.example.lucky7postservice.src.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
+import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,5 +36,20 @@ public class CommentService {
         Comment comment = commentRepository.save(Comment.of(1L, post, content));
 
         return new PostCommentRes(comment.getId());
+    }
+
+    @Transactional
+    public String modifyComment(Long postId, Long commentId, PostCommentReq commentReq) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+        postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        Comment comment = commentRepository.findByIdAndState(commentId, State.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_COMMENT));
+
+        String content = commentReq.getContent().trim();
+        comment.modifyComment(content);
+
+        return "댓글이 수정되었습니다.";
     }
 }

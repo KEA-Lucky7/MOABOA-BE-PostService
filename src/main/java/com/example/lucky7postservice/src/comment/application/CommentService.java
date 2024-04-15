@@ -52,4 +52,19 @@ public class CommentService {
 
         return "댓글이 수정되었습니다.";
     }
+
+    @Transactional
+    public String deleteComment(Long postId, Long commentId) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+        // 존재하는 글인지 확인
+        postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        // 존재하는 댓글인지 확인
+        Comment comment = commentRepository.findByIdAndState(commentId, State.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_COMMENT));
+
+        comment.deleteComment();
+        return "댓글이 삭제되었습니다.";
+    }
 }

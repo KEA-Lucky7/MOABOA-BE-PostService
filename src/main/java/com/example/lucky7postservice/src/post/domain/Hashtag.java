@@ -1,9 +1,7 @@
 package com.example.lucky7postservice.src.post.domain;
 
 import com.example.lucky7postservice.utils.entity.State;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,14 +18,15 @@ public class Hashtag {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    @NotNull
-    private Long postId;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
     @NotNull
     private String content;
 
-    public static Hashtag of(Long postId, String content) {
+    public static Hashtag of(Post post, String content) {
         return Hashtag.builder()
-                .postId(postId)
+                .post(post)
                 .content(content)
                 .build();
     }

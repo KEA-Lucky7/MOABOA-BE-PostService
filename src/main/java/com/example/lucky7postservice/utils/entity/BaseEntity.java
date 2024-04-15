@@ -32,6 +32,4 @@ public class BaseEntity {
     private Timestamp createdAt;
     @LastModifiedDate
     private Timestamp updatedAt;
-    @Enumerated(EnumType.STRING) @NotNull
-    private State state;
 }

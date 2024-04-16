@@ -23,20 +23,15 @@ public class Reply extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
     @NotNull
     private String content;
     @Enumerated(EnumType.STRING) @NotNull
     private State state;
 
-    public static Reply of(Long memberId, Comment comment, Post post,
-                           String content) {
+    public static Reply of(Long memberId, Comment comment, String content) {
         return Reply.builder()
                 .memberId(memberId)
                 .comment(comment)
-                .post(post)
                 .content(content)
                 .state(State.ACTIVE)
                 .build();

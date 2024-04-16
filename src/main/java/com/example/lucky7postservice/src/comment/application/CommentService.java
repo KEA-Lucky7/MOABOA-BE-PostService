@@ -2,15 +2,14 @@ package com.example.lucky7postservice.src.comment.application;
 
 import com.example.lucky7postservice.src.comment.api.dto.PostCommentReq;
 import com.example.lucky7postservice.src.comment.api.dto.PostCommentRes;
+import com.example.lucky7postservice.src.comment.api.dto.PostReplyReq;
+import com.example.lucky7postservice.src.comment.api.dto.PostReplyRes;
 import com.example.lucky7postservice.src.comment.domain.Comment;
+import com.example.lucky7postservice.src.comment.domain.Reply;
 import com.example.lucky7postservice.src.comment.domain.repository.CommentRepository;
-import com.example.lucky7postservice.src.post.api.dto.PostPostReq;
-import com.example.lucky7postservice.src.post.api.dto.PostPostRes;
-import com.example.lucky7postservice.src.post.api.dto.WalletReq;
-import com.example.lucky7postservice.src.post.domain.Hashtag;
+import com.example.lucky7postservice.src.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.post.domain.Post;
 import com.example.lucky7postservice.src.post.domain.PostState;
-import com.example.lucky7postservice.src.post.domain.Wallet;
 import com.example.lucky7postservice.src.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
@@ -25,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final ReplyRepository replyRepository;
 
     @Transactional
     public PostCommentRes comment(Long postId, PostCommentReq commentReq) throws BaseException {
@@ -66,5 +66,22 @@ public class CommentService {
 
         comment.deleteComment();
         return "댓글이 삭제되었습니다.";
+    }
+
+    @Transactional
+    public PostReplyRes reply(Long postId, Long commentId, PostReplyReq replyReq) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+        // 글 존재 여부 확인
+        postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        // 존재하는 댓글인지 확인
+        Comment comment = commentRepository.findByIdAndState(commentId, State.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_COMMENT));
+
+        String content = replyReq.getContent().trim();
+        Reply reply = replyRepository.save(Reply.of(1L, comment, content));
+
+        return new PostReplyRes(reply.getId());
     }
 }

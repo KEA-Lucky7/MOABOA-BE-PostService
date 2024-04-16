@@ -1,6 +1,5 @@
 package com.example.lucky7postservice.src.comment.domain;
 
-import com.example.lucky7postservice.src.post.domain.Post;
 import com.example.lucky7postservice.utils.entity.BaseEntity;
 import com.example.lucky7postservice.utils.entity.State;
 import jakarta.persistence.*;
@@ -23,22 +22,25 @@ public class Reply extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "comment_id")
     private Comment comment;
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
     @NotNull
     private String content;
     @Enumerated(EnumType.STRING) @NotNull
     private State state;
 
-    public static Reply of(Long memberId, Comment comment, Post post,
-                           String content) {
+    public static Reply of(Long memberId, Comment comment, String content) {
         return Reply.builder()
                 .memberId(memberId)
                 .comment(comment)
-                .post(post)
                 .content(content)
                 .state(State.ACTIVE)
                 .build();
+    }
+
+    public void modifyReply(String content) {
+        this.content = content;
+    }
+
+    public void deleteReply() {
+        this.state = State.DELETE;
     }
 }

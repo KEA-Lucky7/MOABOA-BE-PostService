@@ -61,7 +61,7 @@ public class CommentController {
             @ApiResponse(responseCode = "GLB-ERR-010", description = "존재하지 않는 댓글입니다.")
     })
     @DeleteMapping("/{postId}/comment/{commentId}")
-    public BaseResponse<String> modifyComment(@PathVariable Long postId, @PathVariable Long commentId) throws BaseException {
+    public BaseResponse<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) throws BaseException {
         return new BaseResponse<>(commentService.deleteComment(postId, commentId));
     }
 
@@ -95,5 +95,21 @@ public class CommentController {
     @PatchMapping("/{postId}/comment/{commentId}/reply/{replyId}")
     public BaseResponse<String> modifyReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
         return new BaseResponse<>(commentService.modifyReply(postId, commentId, commentId, postReplyReq));
+    }
+
+    @Operation(summary = "답글 삭제 API", description="답글을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-010", description = "존재하지 않는 댓글입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-011", description = "존재하지 않는 답글입니다.")
+    })
+    @DeleteMapping("/{postId}/comment/{commentId}/reply/{replyId}")
+    public BaseResponse<String> deleteReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId) throws BaseException {
+        return new BaseResponse<>(commentService.deleteReply(postId, commentId, replyId));
     }
 }

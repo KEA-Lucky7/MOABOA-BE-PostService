@@ -105,4 +105,23 @@ public class CommentService {
 
         return "답글이 수정되었습니다.";
     }
+
+    @Transactional
+    public String deleteReply(Long postId, Long commentId, Long replyId) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+        // 글 존재 여부 확인
+        postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        // 댓글 존재 여부 확인
+        commentRepository.findByIdAndState(commentId, State.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_COMMENT));
+
+        // 답글 존재 여부 확인
+        Reply reply = replyRepository.findByIdAndState(replyId, State.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_REPLY));
+
+        reply.deleteReply();
+        return "답글이 삭제되었습니다.";
+    }
 }

@@ -39,4 +39,8 @@ public class Reply extends BaseEntity {
     public void modifyReply(String content) {
         this.content = content;
     }
+
+    public void deleteReply() {
+        this.state = State.DELETE;
+    }
 }

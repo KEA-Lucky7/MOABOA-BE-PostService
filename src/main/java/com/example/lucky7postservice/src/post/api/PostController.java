@@ -73,7 +73,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
-    @PatchMapping("/{postId}/modification")
+    @PatchMapping("/{postId}")
     public BaseResponse<PostPostRes> modifyPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq patchReq) throws BaseException {
         return new BaseResponse<>(postService.modifyPost(postId, patchReq));
     }

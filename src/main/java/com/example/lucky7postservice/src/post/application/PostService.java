@@ -29,13 +29,13 @@ public class PostService {
     private final WalletRepository walletRepository;
 
     @Transactional
-    public PostPostRes postPost(Long postId, Long memberId, PostPostReq postReq) throws BaseException {
+    public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
         // TODO : 멤버 존재 여부 확인
         Long blogId = 1L;
         Post post;
 
         if(postId == 0) {
-            post = postRepository.save(Post.of(memberId, blogId,
+            post = postRepository.save(Post.of(1L, blogId,
                     postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
                     PostState.ACTIVE));
         } else {
@@ -56,7 +56,7 @@ public class PostService {
 
         // 소비 내역 저장
         for(WalletReq wallet : postReq.getWalletList()) {
-            walletRepository.save(Wallet.of(memberId, post,
+            walletRepository.save(Wallet.of(1L, post,
                     wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
         }
 

@@ -84,4 +84,25 @@ public class CommentService {
 
         return new PostReplyRes(reply.getId());
     }
+
+    @Transactional
+    public String modifyReply(Long postId, Long commentId, Long replyId, PostReplyReq postReplyReq) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+        // 글 존재 여부 확인
+        postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        // 댓글 존재 여부 확인
+        commentRepository.findByIdAndState(commentId, State.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_COMMENT));
+
+        // 답글 존재 여부 확인
+        Reply reply = replyRepository.findByIdAndState(replyId, State.ACTIVE).orElseThrow(
+                () -> new BaseException(BaseResponseStatus.INVALID_REPLY));
+
+        String content = postReplyReq.getContent().trim();
+        reply.modifyReply(content);
+
+        return "답글이 수정되었습니다.";
+    }
 }

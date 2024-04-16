@@ -1,6 +1,5 @@
 package com.example.lucky7postservice.src.comment.domain;
 
-import com.example.lucky7postservice.src.post.domain.Post;
 import com.example.lucky7postservice.utils.entity.BaseEntity;
 import com.example.lucky7postservice.utils.entity.State;
 import jakarta.persistence.*;
@@ -35,5 +34,9 @@ public class Reply extends BaseEntity {
                 .content(content)
                 .state(State.ACTIVE)
                 .build();
+    }
+
+    public void modifyReply(String content) {
+        this.content = content;
     }
 }

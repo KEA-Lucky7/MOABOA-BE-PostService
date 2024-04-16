@@ -58,7 +58,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
-    @PatchMapping("/{postId}/state")
+    @DeleteMapping("/{postId}")
     public BaseResponse<String> deletePost(@PathVariable Long postId) throws BaseException {
         return new BaseResponse<>(postService.deletePost(postId));
     }

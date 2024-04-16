@@ -43,9 +43,9 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
             })
-    @PostMapping("/{postId}/temporary/{memberId}")
-    public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @PathVariable Long memberId, @Valid @RequestBody SavePostReq postReq) throws BaseException {
-        return new BaseResponse<>(postService.savePost(postId, memberId, postReq));
+    @PostMapping("/{postId}/temporary")
+    public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody SavePostReq postReq) throws BaseException {
+        return new BaseResponse<>(postService.savePost(postId, postReq));
     }
 
     /* 글 삭제하기 API */

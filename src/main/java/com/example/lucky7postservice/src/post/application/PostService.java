@@ -64,13 +64,13 @@ public class PostService {
     }
 
     @Transactional
-    public PostPostRes savePost(Long postId, Long memberId, SavePostReq postReq) throws BaseException {
+    public PostPostRes savePost(Long postId, SavePostReq postReq) throws BaseException {
         // TODO : 멤버 존재 여부 확인
         Long blogId = 1L;
         Post post;
 
         if(postId == 0) {
-            post = postRepository.save(Post.saveTemporaryPost(memberId, blogId,
+            post = postRepository.save(Post.saveTemporaryPost(1L, blogId,
                     postReq.getTitle(), postReq.getContent()));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함

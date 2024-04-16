@@ -65,8 +65,8 @@ public class CommentController {
         return new BaseResponse<>(commentService.deleteComment(postId, commentId));
     }
 
-    /* 답글 수정 API */
-    @Operation(summary = "답글 수정 API", description="답글을 수정합니다.")
+    /* 답글 등록 API */
+    @Operation(summary = "답글 등록 API", description="답글을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
@@ -81,7 +81,7 @@ public class CommentController {
         return new BaseResponse<>(commentService.reply(postId, commentId, postReplyReq));
     }
 
-    @Operation(summary = "댓글 수정 API", description="댓글을 수정합니다.")
+    @Operation(summary = "답글 수정 API", description="답글을 수정합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),

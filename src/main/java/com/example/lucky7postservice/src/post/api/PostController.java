@@ -28,9 +28,9 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
     })
-    @PostMapping("/{postId}/{memberId}")
-    public BaseResponse<PostPostRes> postPost(@PathVariable Long postId, @PathVariable Long memberId, @Valid @RequestBody PostPostReq postReq) throws BaseException {
-        return new BaseResponse<>(postService.postPost(postId, memberId, postReq));
+    @PostMapping("/{postId}")
+    public BaseResponse<PostPostRes> postPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq postReq) throws BaseException {
+        return new BaseResponse<>(postService.postPost(postId, postReq));
     }
 
     /* 글 임시 저장하기 API */
@@ -43,9 +43,9 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
             })
-    @PostMapping("/{postId}/temporary/{memberId}")
-    public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @PathVariable Long memberId, @Valid @RequestBody SavePostReq postReq) throws BaseException {
-        return new BaseResponse<>(postService.savePost(postId, memberId, postReq));
+    @PostMapping("/{postId}/temporary")
+    public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody SavePostReq postReq) throws BaseException {
+        return new BaseResponse<>(postService.savePost(postId, postReq));
     }
 
     /* 글 삭제하기 API */
@@ -58,7 +58,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
-    @PatchMapping("/{postId}/state")
+    @DeleteMapping("/{postId}")
     public BaseResponse<String> deletePost(@PathVariable Long postId) throws BaseException {
         return new BaseResponse<>(postService.deletePost(postId));
     }
@@ -73,7 +73,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
-    @PatchMapping("/{postId}/modification")
+    @PatchMapping("/{postId}")
     public BaseResponse<PostPostRes> modifyPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq patchReq) throws BaseException {
         return new BaseResponse<>(postService.modifyPost(postId, patchReq));
     }

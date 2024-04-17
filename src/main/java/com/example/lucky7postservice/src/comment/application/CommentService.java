@@ -122,6 +122,6 @@ public class CommentService {
                 () -> new BaseException(BaseResponseStatus.INVALID_REPLY));
 
         reply.deleteReply();
-        return "답글이 삭제되었습니다.";
+        return "답글이 성공적으로 삭제되었습니다.";
     }
 }

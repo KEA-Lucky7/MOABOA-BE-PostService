@@ -18,7 +18,7 @@ public class PostLikeController {
     /* 글 공감하기 API */
     @Operation(summary = "글 공감 API", description="글에 좋아요를 누릅니다")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -32,7 +32,7 @@ public class PostLikeController {
 
     @Operation(summary = "글 공감 취소 API", description="글 좋아요를 취소합니다")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),

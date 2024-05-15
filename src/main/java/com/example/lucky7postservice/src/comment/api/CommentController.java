@@ -23,7 +23,7 @@ public class CommentController {
     /* 댓글 달기 API */
     @Operation(summary = "댓글 등록 API", description="글에 댓글을 답니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -37,7 +37,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 수정 API", description="댓글을 수정합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -52,7 +52,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 삭제 API", description="댓글을 삭제합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -68,7 +68,7 @@ public class CommentController {
     /* 답글 등록 API */
     @Operation(summary = "답글 등록 API", description="답글을 등록합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -83,7 +83,7 @@ public class CommentController {
 
     @Operation(summary = "답글 수정 API", description="답글을 수정합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -99,7 +99,7 @@ public class CommentController {
 
     @Operation(summary = "답글 삭제 API", description="답글을 삭제합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-005", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),

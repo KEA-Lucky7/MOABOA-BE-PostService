@@ -73,7 +73,7 @@ public class PostService {
             post = postRepository.save(Post.saveTemporaryPost(1L, blogId,
                     postReq.getTitle(), postReq.getContent()));
         } else {
-            // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
+            // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함 -> 수정해야함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 

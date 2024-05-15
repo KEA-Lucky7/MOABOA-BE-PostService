@@ -55,7 +55,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
             })
-    @PostMapping("/{postId}/temporary")
+    @PostMapping("/temp/{postId}")
     public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody SavePostReq postReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 

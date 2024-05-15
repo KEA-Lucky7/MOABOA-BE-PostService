@@ -34,6 +34,8 @@ public class PostLikeController {
     })
     @PostMapping("/{postId}/like")
     public BaseResponse<String> like(@PathVariable Long postId) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(postLikeService.like(postId));
     }
 
@@ -52,6 +54,8 @@ public class PostLikeController {
     })
     @DeleteMapping("/{postId}/like")
     public BaseResponse<String> dislike(@PathVariable Long postId) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(postLikeService.dislike(postId));
     }
 }

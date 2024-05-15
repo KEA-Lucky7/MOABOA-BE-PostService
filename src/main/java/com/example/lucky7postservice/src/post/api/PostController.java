@@ -37,6 +37,8 @@ public class PostController {
     })
     @PostMapping("/{postId}")
     public BaseResponse<PostPostRes> postPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq postReq) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(postService.postPost(postId, postReq));
     }
 
@@ -55,6 +57,8 @@ public class PostController {
             })
     @PostMapping("/{postId}/temporary")
     public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody SavePostReq postReq) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(postService.savePost(postId, postReq));
     }
 
@@ -73,6 +77,8 @@ public class PostController {
     })
     @DeleteMapping("/{postId}")
     public BaseResponse<String> deletePost(@PathVariable Long postId) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(postService.deletePost(postId));
     }
 
@@ -91,6 +97,8 @@ public class PostController {
     })
     @PatchMapping("/{postId}")
     public BaseResponse<PostPostRes> modifyPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq patchReq) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(postService.modifyPost(postId, patchReq));
     }
 }

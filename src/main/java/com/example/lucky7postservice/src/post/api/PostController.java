@@ -7,6 +7,10 @@ import com.example.lucky7postservice.src.post.application.PostService;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
@@ -21,6 +25,9 @@ public class PostController {
 
     /* 글 작성하기 API */
     @Operation(summary = "글 작성 API", description="글을 작성합니다, 임시 저장 없이 글을 바로 작성하는 경우에는 0을 보내주세요")
+    @Parameters({
+            @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
@@ -35,6 +42,9 @@ public class PostController {
 
     /* 글 임시 저장하기 API */
     @Operation(summary = "글 임시 저장 API", description="글을 임시 저장합니다, 첫 임시저장이라면 postId에 0을 보내주세요")
+    @Parameters({
+            @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
@@ -50,6 +60,9 @@ public class PostController {
 
     /* 글 삭제하기 API */
     @Operation(summary = "글 삭제 API", description="글을 삭제합니다")
+    @Parameters({
+            @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
@@ -65,6 +78,9 @@ public class PostController {
 
     /* 글 수정하기 API */
     @Operation(summary = "글 수정 API", description="글을 수정합니다")
+    @Parameters({
+            @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),

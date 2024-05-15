@@ -15,6 +15,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Hashtag {
+    // TODO : 대표 해시태그 적용
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

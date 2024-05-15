@@ -39,6 +39,8 @@ public class CommentController {
     })
     @PostMapping("/{postId}/comment")
     public BaseResponse<PostCommentRes> comment(@PathVariable Long postId, @Valid @RequestBody PostCommentReq postCommentReq) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(commentService.comment(postId, postCommentReq));
     }
 
@@ -57,6 +59,8 @@ public class CommentController {
             })
     @PatchMapping("/{postId}/comment/{commentId}")
     public BaseResponse<String> modifyComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody PostCommentReq postCommentReq) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(commentService.modifyComment(postId, commentId, postCommentReq));
     }
 
@@ -75,6 +79,8 @@ public class CommentController {
     })
     @DeleteMapping("/{postId}/comment/{commentId}")
     public BaseResponse<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(commentService.deleteComment(postId, commentId));
     }
 
@@ -94,6 +100,8 @@ public class CommentController {
     })
     @PostMapping("/{postId}/comment/{commentId}/reply")
     public BaseResponse<PostReplyRes> comment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(commentService.reply(postId, commentId, postReplyReq));
     }
 
@@ -113,6 +121,8 @@ public class CommentController {
     })
     @PatchMapping("/{postId}/comment/{commentId}/reply/{replyId}")
     public BaseResponse<String> modifyReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(commentService.modifyReply(postId, commentId, commentId, postReplyReq));
     }
 
@@ -132,6 +142,8 @@ public class CommentController {
     })
     @DeleteMapping("/{postId}/comment/{commentId}/reply/{replyId}")
     public BaseResponse<String> deleteReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
         return new BaseResponse<>(commentService.deleteReply(postId, commentId, replyId));
     }
 }

@@ -11,7 +11,7 @@ import java.util.Objects;
 @Getter
 public enum BaseResponseStatus {
     /** 기본 Response **/
-    SUCCESS("GLB-ERR-000", HttpStatus.OK, "요청이 성공적으로 처리되었습니다."),
+    SUCCESS("GLB-SUC-000", HttpStatus.OK, "요청이 성공적으로 처리되었습니다."),
     BAD_REQUEST("GLB-ERR-001", HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     METHOD_NOT_ALLOWED("GLB-ERR-002", HttpStatus.METHOD_NOT_ALLOWED, "허용되지 않은 메서드입니다."),
     INTERNAL_SERVER_ERROR("GLB-ERR-003", HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류입니다."),

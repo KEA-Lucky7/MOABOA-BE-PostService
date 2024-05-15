@@ -30,7 +30,7 @@ public class CommentController {
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -47,7 +47,7 @@ public class CommentController {
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -65,7 +65,7 @@ public class CommentController {
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -84,7 +84,7 @@ public class CommentController {
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -102,7 +102,7 @@ public class CommentController {
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
@@ -121,7 +121,7 @@ public class CommentController {
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
     })
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "GLB-ERR-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),

@@ -1,5 +1,10 @@
 package com.example.lucky7postservice.src.post.application;
 
+import com.example.lucky7postservice.src.comment.domain.Comment;
+import com.example.lucky7postservice.src.comment.domain.Reply;
+import com.example.lucky7postservice.src.comment.domain.repository.CommentRepository;
+import com.example.lucky7postservice.src.comment.domain.repository.ReplyRepository;
+import com.example.lucky7postservice.src.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.post.api.dto.PostPostReq;
 import com.example.lucky7postservice.src.post.api.dto.PostPostRes;
 import com.example.lucky7postservice.src.post.api.dto.SavePostReq;
@@ -13,9 +18,12 @@ import com.example.lucky7postservice.src.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.src.post.domain.repository.WalletRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
+import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +32,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final HashtagRepository hashtagRepository;
     private final WalletRepository walletRepository;
+    private final CommentRepository commentRepository;
+    private final ReplyRepository replyRepository;
+    private final PostLikeRepository likeRepository;
 
     @Transactional
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
@@ -110,8 +121,22 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
         // 게시물 삭제
-        // TODO : 게시물 삭제 시 관련 댓글, 좋아요도 삭제
         post.deletePost();
+
+        // 관련 댓글 & 답글 삭제
+        List<Comment> commentList = commentRepository.findAllByPostIdAndState(postId, State.ACTIVE);
+        for(Comment comment : commentList) {
+            comment.deleteComment();
+        }
+
+        List<Reply> replyList = replyRepository.findAllByCommentPostIdAndState(postId, State.ACTIVE);
+        for(Reply reply : replyList) {
+            reply.deleteReply();
+        }
+
+        // 관련 좋아요 삭제
+        likeRepository.deleteAll(likeRepository.findAllByPostId(postId));
+
         return "게시물을 삭제하였습니다.";
     }
 

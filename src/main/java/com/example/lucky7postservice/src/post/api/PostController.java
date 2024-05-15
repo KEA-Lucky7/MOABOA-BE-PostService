@@ -2,7 +2,8 @@ package com.example.lucky7postservice.src.post.api;
 
 import com.example.lucky7postservice.src.post.api.dto.PostPostReq;
 import com.example.lucky7postservice.src.post.api.dto.PostPostRes;
-import com.example.lucky7postservice.src.post.api.dto.SavePostReq;
+import com.example.lucky7postservice.src.post.api.dto.PostSavedPostReq;
+import com.example.lucky7postservice.src.post.api.dto.GetSavedPostsRes;
 import com.example.lucky7postservice.src.post.application.PostService;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponse;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,10 +59,29 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
             })
     @PostMapping("/temp/{postId}")
-    public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody SavePostReq postReq) throws BaseException {
+    public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody PostSavedPostReq postReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
         return new BaseResponse<>(postService.savePost(postId, postReq));
+    }
+
+    /* 글 임시 저장 목록 조회 API */
+    @Operation(summary = "글 임시 저장 목록 조회 API", description="임시 저장한 글 목록을 반환합니다")
+    @Parameters({
+            @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다.")
+    })
+    @GetMapping("/temp-list")
+    public BaseResponse<List<GetSavedPostsRes>> getSavedPosts() throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
+        return new BaseResponse<>(postService.getSavedPosts());
     }
 
     /* 글 삭제하기 API */

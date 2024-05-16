@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 
 public class SetTime {
     public static String timestampToString(Timestamp timestamp) {
-        SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat("yy.MM.dd");
         Date date = new Date(timestamp.getTime());
 
         return format.format(date);

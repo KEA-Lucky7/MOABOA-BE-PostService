@@ -31,7 +31,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다.")
     })
-    @GetMapping("/home-post-list")
+    @GetMapping("/home-list")
     public BaseResponse<List<GetHomePostsRes>> getHomePosts(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 

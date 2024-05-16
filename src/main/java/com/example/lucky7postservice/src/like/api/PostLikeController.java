@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.src.like.api;
 
+import com.example.lucky7postservice.src.like.api.dto.GetLikePostsRes;
 import com.example.lucky7postservice.src.like.application.PostLikeService;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponse;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,5 +60,22 @@ public class PostLikeController {
         // TODO : Authorization에서 jwt 추출하기
 
         return new BaseResponse<>(postLikeService.dislike(postId));
+    }
+
+    @Operation(summary = "좋아요 누른 글 목록 반환 API", description="글 좋아요를 취소합니다")
+    @Parameters({
+            @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다.")
+    })
+    @GetMapping("like-list")
+    public BaseResponse<List<GetLikePostsRes>> getLikeList(@RequestParam("page") int page) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
+        return new BaseResponse<>(postLikeService.getLikeList(page));
     }
 }

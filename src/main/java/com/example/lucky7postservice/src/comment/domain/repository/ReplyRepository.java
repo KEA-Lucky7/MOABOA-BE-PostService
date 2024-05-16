@@ -14,5 +14,6 @@ import java.util.Optional;
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
     Optional<Reply> findByIdAndState(Long replyId, State state);
     List<Reply> findAllByCommentPostIdAndState(Long postId, State state);
+    List<Reply> findAllByCommentIdAndState(Long commentId, State state);
 
 }

@@ -21,4 +21,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "where p.postState='ACTIVE' \n" +
             "order by (select count(l) from PostLike l where l.post.id = p.id) desc, p.id asc ")
     List<Post> findAllOrderByLikeCnt(Pageable pageable);
+
+    @Query(value = "select p from Post as p \n" +
+            "inner join PostLike as l on p.id=l.post.id \n" +
+            "where p.postState='ACTIVE' \n" +
+            "order by p.id")
+    List<Post> findAllByLikeOrderById(Pageable pageable);
 }

@@ -5,10 +5,7 @@ import com.example.lucky7postservice.src.comment.domain.Reply;
 import com.example.lucky7postservice.src.comment.domain.repository.CommentRepository;
 import com.example.lucky7postservice.src.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.like.domain.repository.PostLikeRepository;
-import com.example.lucky7postservice.src.post.api.dto.PostPostReq;
-import com.example.lucky7postservice.src.post.api.dto.PostPostRes;
-import com.example.lucky7postservice.src.post.api.dto.SavePostReq;
-import com.example.lucky7postservice.src.post.api.dto.WalletReq;
+import com.example.lucky7postservice.src.post.api.dto.*;
 import com.example.lucky7postservice.src.post.domain.Hashtag;
 import com.example.lucky7postservice.src.post.domain.Post;
 import com.example.lucky7postservice.src.post.domain.PostState;
@@ -18,12 +15,16 @@ import com.example.lucky7postservice.src.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.src.post.domain.repository.WalletRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
+import com.example.lucky7postservice.utils.config.SetTime;
 import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,25 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
     private final PostLikeRepository likeRepository;
+
+    public List<GetHomePostsRes> getHomePosts(int page, int pageSize) {
+        // TODO : 멤버 정보 불러오기
+        Long memberId = 1L;
+        String nickname = "joeun";
+
+        List<Post> postList = postRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
+
+        return postList.stream()
+                .map(d -> GetHomePostsRes.builder()
+                        .postId(d.getId())
+                        .title(d.getTitle())
+                        .thumbnail(d.getThumbnail())
+                        .memberId(memberId)
+                        .nickname(nickname)
+                        .createdAt(SetTime.timestampToString(d.getCreatedAt()))
+                        .build())
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
@@ -77,9 +97,8 @@ public class PostService {
         return new PostPostRes(post.getId());
     }
 
-    // TODO : 임시 저장 다시 한 번 생각해보기
     @Transactional
-    public PostPostRes savePost(Long postId, SavePostReq postReq) throws BaseException {
+    public PostPostRes savePost(Long postId, PostSavedPostReq postReq) throws BaseException {
         // TODO : 멤버 존재 여부 확인
         Long memberId = 1L;
 
@@ -110,6 +129,21 @@ public class PostService {
         updateWallet(postReq.getWalletList(), post);
 
         return new PostPostRes(post.getId());
+    }
+
+    public List<GetSavedPostsRes> getSavedPosts() {
+        // TODO : 멤버 존재 여부 확인
+        Long memberId = 1L;
+
+        List<Post> postList = postRepository.findAllByMemberIdAndPostState(memberId, PostState.TEMPORARY);
+
+        return postList.stream()
+                .map(d -> GetSavedPostsRes.builder()
+                        .postId(d.getId())
+                        .title(d.getTitle())
+                        .updatedAt(SetTime.timestampToString(d.getUpdatedAt()))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Transactional

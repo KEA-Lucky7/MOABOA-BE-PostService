@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class SavePostReq {
+public class PostSavedPostReq {
     @NotBlank(message="게시물 제목을 입력해야 합니다.")
     @Schema(description = "게시물 제목", example = "오늘의 글")
     private String title;

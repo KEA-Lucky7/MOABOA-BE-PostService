@@ -5,6 +5,7 @@ import com.example.lucky7postservice.src.comment.domain.Reply;
 import com.example.lucky7postservice.src.comment.domain.repository.CommentRepository;
 import com.example.lucky7postservice.src.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.like.api.dto.GetLikePostsRes;
+import com.example.lucky7postservice.src.like.api.dto.PatchLikePostsReq;
 import com.example.lucky7postservice.src.like.domain.PostLike;
 import com.example.lucky7postservice.src.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.post.api.dto.GetHomePostsRes;
@@ -93,5 +94,18 @@ public class PostLikeService {
         }
 
         return likePostList;
+    }
+
+    @Transactional
+    public String dislikeList(PatchLikePostsReq patchLikePostsReq) throws BaseException {
+        // TODO : 멤버 존재 여부 확인
+
+        List<Long> postIdList = patchLikePostsReq.getPostIdList();
+        for(Long postId : postIdList) {
+            System.out.println(postId);
+            dislike(postId);
+        }
+
+        return "글 좋아요를 모두 취소했습니다.";
     }
 }

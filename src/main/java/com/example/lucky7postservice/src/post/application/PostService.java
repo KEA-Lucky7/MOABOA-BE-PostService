@@ -37,12 +37,12 @@ public class PostService {
     private final ReplyRepository replyRepository;
     private final PostLikeRepository likeRepository;
 
-    public List<GetHomePostsRes> getHomePosts() throws BaseException {
+    public List<GetHomePostsRes> getHomePosts(int page, int pageSize) {
         // TODO : 멤버 정보 불러오기
         Long memberId = 1L;
         String nickname = "joeun";
 
-        List<Post> postList = postRepository.findAllOrderByLikeCnt(PageRequest.of(0, 3));
+        List<Post> postList = postRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
 
         return postList.stream()
                 .map(d -> GetHomePostsRes.builder()

@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,10 +32,10 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다.")
     })
     @GetMapping("/home-post-list")
-    public BaseResponse<List<GetHomePostsRes>> getHomePosts() throws BaseException {
+    public BaseResponse<List<GetHomePostsRes>> getHomePosts(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postService.getHomePosts());
+        return new BaseResponse<>(postService.getHomePosts(page, pageSize));
     }
 
     /* 글 작성하기 API */

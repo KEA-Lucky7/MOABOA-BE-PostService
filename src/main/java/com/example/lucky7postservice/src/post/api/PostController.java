@@ -1,9 +1,6 @@
 package com.example.lucky7postservice.src.post.api;
 
-import com.example.lucky7postservice.src.post.api.dto.PostPostReq;
-import com.example.lucky7postservice.src.post.api.dto.PostPostRes;
-import com.example.lucky7postservice.src.post.api.dto.PostSavedPostReq;
-import com.example.lucky7postservice.src.post.api.dto.GetSavedPostsRes;
+import com.example.lucky7postservice.src.post.api.dto.*;
 import com.example.lucky7postservice.src.post.application.PostService;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponse;
@@ -25,6 +22,20 @@ import java.util.List;
 @RequestMapping("/posts")
 public class PostController {
     private final PostService postService;
+
+    /* 홈 화면 글 목록 조회 (좋아요순) API */
+    @Operation(summary = "홈 화면 글 목록 조회 (좋아요순) API", description="홈 화면의 글(BEST) 목록을 반환합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다.")
+    })
+    @GetMapping("/home-post-list")
+    public BaseResponse<List<GetHomePostsRes>> getHomePosts() throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
+        return new BaseResponse<>(postService.getHomePosts());
+    }
 
     /* 글 작성하기 API */
     @Operation(summary = "글 작성 API", description="글을 작성합니다, 임시 저장 없이 글을 바로 작성하는 경우에는 0을 보내주세요")

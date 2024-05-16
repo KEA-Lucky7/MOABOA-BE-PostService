@@ -2,7 +2,9 @@ package com.example.lucky7postservice.src.post.domain.repository;
 
 import com.example.lucky7postservice.src.post.domain.Post;
 import com.example.lucky7postservice.src.post.domain.PostState;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +16,9 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndPostState(Long id, PostState state);
     List<Post> findAllByMemberIdAndPostState(Long memberId, PostState state);
+
+    @Query(value = "select p from Post p \n" +
+            "where p.postState='ACTIVE' \n" +
+            "order by (select count(l) from PostLike l where l.post.id = p.id) desc, p.id asc ")
+    List<Post> findAllOrderByLikeCnt(Pageable pageable);
 }

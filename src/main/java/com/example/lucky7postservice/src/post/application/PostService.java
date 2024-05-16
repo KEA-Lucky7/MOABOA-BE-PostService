@@ -18,6 +18,8 @@ import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
 import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,25 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
     private final PostLikeRepository likeRepository;
+
+    public List<GetHomePostsRes> getHomePosts() throws BaseException {
+        // TODO : 멤버 정보 불러오기
+        Long memberId = 1L;
+        String nickname = "joeun";
+
+        List<Post> postList = postRepository.findAllOrderByLikeCnt(PageRequest.of(0, 3));
+
+        return postList.stream()
+                .map(d -> GetHomePostsRes.builder()
+                        .postId(d.getId())
+                        .title(d.getTitle())
+                        .thumbnail(d.getThumbnail())
+                        .memberId(memberId)
+                        .nickname(nickname)
+                        .createdAt(SetTime.timestampToString(d.getCreatedAt()))
+                        .build())
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {

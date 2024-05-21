@@ -6,7 +6,6 @@ import com.example.lucky7postservice.src.comment.api.dto.PostReplyReq;
 import com.example.lucky7postservice.src.comment.api.dto.PostReplyRes;
 import com.example.lucky7postservice.src.comment.application.CommentService;
 import com.example.lucky7postservice.utils.config.BaseException;
-import com.example.lucky7postservice.utils.config.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -16,6 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,10 +39,11 @@ public class CommentController {
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
     @PostMapping("/{postId}/comment")
-    public BaseResponse<PostCommentRes> comment(@PathVariable Long postId, @Valid @RequestBody PostCommentReq postCommentReq) throws BaseException {
+    public ResponseEntity<PostCommentRes> comment(@PathVariable Long postId, @Valid @RequestBody PostCommentReq postCommentReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(commentService.comment(postId, postCommentReq));
+        return new ResponseEntity<>(commentService.comment(postId, postCommentReq)
+                , HttpStatus.OK);
     }
 
     @Operation(summary = "댓글 수정 API", description="댓글을 수정합니다.")
@@ -58,10 +60,11 @@ public class CommentController {
             @ApiResponse(responseCode = "GLB-ERR-010", description = "존재하지 않는 댓글입니다.")
             })
     @PatchMapping("/{postId}/comment/{commentId}")
-    public BaseResponse<String> modifyComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody PostCommentReq postCommentReq) throws BaseException {
+    public ResponseEntity<String> modifyComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody PostCommentReq postCommentReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(commentService.modifyComment(postId, commentId, postCommentReq));
+        return new ResponseEntity<>(commentService.modifyComment(postId, commentId, postCommentReq)
+                , HttpStatus.OK);
     }
 
     @Operation(summary = "댓글 삭제 API", description="댓글을 삭제합니다.")
@@ -78,10 +81,11 @@ public class CommentController {
             @ApiResponse(responseCode = "GLB-ERR-010", description = "존재하지 않는 댓글입니다.")
     })
     @DeleteMapping("/{postId}/comment/{commentId}")
-    public BaseResponse<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) throws BaseException {
+    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(commentService.deleteComment(postId, commentId));
+        return new ResponseEntity<>(commentService.deleteComment(postId, commentId)
+                , HttpStatus.OK);
     }
 
     /* 답글 등록 API */
@@ -99,10 +103,11 @@ public class CommentController {
             @ApiResponse(responseCode = "GLB-ERR-010", description = "존재하지 않는 댓글입니다.")
     })
     @PostMapping("/{postId}/comment/{commentId}/reply")
-    public BaseResponse<PostReplyRes> comment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
+    public ResponseEntity<PostReplyRes> comment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(commentService.reply(postId, commentId, postReplyReq));
+        return new ResponseEntity<>(commentService.reply(postId, commentId, postReplyReq),
+                HttpStatus.OK);
     }
 
     @Operation(summary = "답글 수정 API", description="답글을 수정합니다.")
@@ -120,10 +125,11 @@ public class CommentController {
             @ApiResponse(responseCode = "GLB-ERR-011", description = "존재하지 않는 답글입니다.")
     })
     @PatchMapping("/{postId}/comment/{commentId}/reply/{replyId}")
-    public BaseResponse<String> modifyReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
+    public ResponseEntity<String> modifyReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(commentService.modifyReply(postId, commentId, commentId, postReplyReq));
+        return new ResponseEntity<>(commentService.modifyReply(postId, commentId, commentId, postReplyReq),
+                HttpStatus.OK);
     }
 
     @Operation(summary = "답글 삭제 API", description="답글을 삭제합니다.")
@@ -141,9 +147,10 @@ public class CommentController {
             @ApiResponse(responseCode = "GLB-ERR-011", description = "존재하지 않는 답글입니다.")
     })
     @DeleteMapping("/{postId}/comment/{commentId}/reply/{replyId}")
-    public BaseResponse<String> deleteReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId) throws BaseException {
+    public ResponseEntity<String> deleteReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(commentService.deleteReply(postId, commentId, replyId));
+        return new ResponseEntity<>(commentService.deleteReply(postId, commentId, replyId),
+                HttpStatus.OK);
     }
 }

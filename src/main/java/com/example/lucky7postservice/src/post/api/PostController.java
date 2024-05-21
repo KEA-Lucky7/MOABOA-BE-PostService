@@ -13,7 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,10 +33,11 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다.")
     })
     @GetMapping("/home-list")
-    public BaseResponse<List<GetHomePostsRes>> getHomePosts(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) throws BaseException {
+    public ResponseEntity<List<GetHomePostsRes>> getHomePosts(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postService.getHomePosts(page, pageSize));
+        return new ResponseEntity<>(postService.getHomePosts(page, pageSize),
+                HttpStatus.OK);
     }
 
     /* 글 작성하기 API */
@@ -51,10 +53,11 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
     })
     @PostMapping("/{postId}")
-    public BaseResponse<PostPostRes> postPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq postReq) throws BaseException {
+    public ResponseEntity<PostPostRes> postPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq postReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postService.postPost(postId, postReq));
+        return new ResponseEntity<>(postService.postPost(postId, postReq),
+                HttpStatus.OK);
     }
 
     /* 글 임시 저장하기 API */
@@ -71,10 +74,11 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
             })
     @PostMapping("/temp/{postId}")
-    public BaseResponse<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody PostSavedPostReq postReq) throws BaseException {
+    public ResponseEntity<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody PostSavedPostReq postReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postService.savePost(postId, postReq));
+        return new ResponseEntity<>(postService.savePost(postId, postReq),
+                HttpStatus.OK);
     }
 
     /* 글 임시 저장 목록 조회 API */
@@ -90,10 +94,11 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다.")
     })
     @GetMapping("/temp-list")
-    public BaseResponse<List<GetSavedPostsRes>> getSavedPosts() throws BaseException {
+    public ResponseEntity<List<GetSavedPostsRes>> getSavedPosts() throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postService.getSavedPosts());
+        return new ResponseEntity<>(postService.getSavedPosts(),
+                HttpStatus.OK);
     }
 
     /* 글 삭제하기 API */
@@ -110,10 +115,11 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
     @DeleteMapping("/{postId}")
-    public BaseResponse<String> deletePost(@PathVariable Long postId) throws BaseException {
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postService.deletePost(postId));
+        return new ResponseEntity<>(postService.deletePost(postId),
+                HttpStatus.OK);
     }
 
     /* 글 수정하기 API */
@@ -130,9 +136,10 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
     @PatchMapping("/{postId}")
-    public BaseResponse<PostPostRes> modifyPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq patchReq) throws BaseException {
+    public ResponseEntity<PostPostRes> modifyPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq patchReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postService.modifyPost(postId, patchReq));
+        return new ResponseEntity<>(postService.modifyPost(postId, patchReq),
+                HttpStatus.OK);
     }
 }

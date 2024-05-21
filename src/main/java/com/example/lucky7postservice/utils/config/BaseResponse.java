@@ -19,13 +19,13 @@ public class BaseResponse<T> {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "응답 메세지", example = "요청에 성공하였습니다.")
     private String message;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private T data;
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    private T data;
 
-    // Request success
-    public BaseResponse(T data) {
-        this.data = data;
-    }
+//    // Request success
+//    public BaseResponse(T data) {
+//        this.data = data;
+//    }
 
     // Request Fail
     public BaseResponse(BaseResponseStatus status) {

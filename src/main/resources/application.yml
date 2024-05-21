@@ -39,7 +39,7 @@ management:
 # Swagger
 springdoc:
   swagger-ui:
-    path: /swagger-ui.html
+    path: posts/swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
   api-docs:
@@ -48,4 +48,3 @@ springdoc:
     disabled: true
   use-fqn: true
   default-consumes-media-type: application/json;charset=UTF-8
-  default-produces-media-type: application/json;charset=UTF-8

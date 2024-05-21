@@ -4,7 +4,6 @@ import com.example.lucky7postservice.src.like.api.dto.GetLikePostsRes;
 import com.example.lucky7postservice.src.like.api.dto.PatchLikePostsReq;
 import com.example.lucky7postservice.src.like.application.PostLikeService;
 import com.example.lucky7postservice.utils.config.BaseException;
-import com.example.lucky7postservice.utils.config.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -13,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,10 +38,11 @@ public class PostLikeController {
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
     @PostMapping("/{postId}/like")
-    public BaseResponse<String> like(@PathVariable Long postId) throws BaseException {
+    public ResponseEntity<String> like(@PathVariable Long postId) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postLikeService.like(postId));
+        return new ResponseEntity<>(postLikeService.like(postId),
+                HttpStatus.OK);
     }
 
     @Operation(summary = "글 공감 취소 API", description="글 좋아요를 취소합니다")
@@ -57,10 +59,11 @@ public class PostLikeController {
             @ApiResponse(responseCode = "GLB-ERR-009", description = "존재하지 않는 글 좋아요입니다.")
     })
     @DeleteMapping("/{postId}/like")
-    public BaseResponse<String> dislike(@PathVariable Long postId) throws BaseException {
+    public ResponseEntity<String> dislike(@PathVariable Long postId) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postLikeService.dislike(postId));
+        return new ResponseEntity<>(postLikeService.dislike(postId),
+                HttpStatus.OK);
     }
 
     @Operation(summary = "좋아요 누른 글 목록 반환 API", description="글 좋아요를 취소합니다")
@@ -74,10 +77,11 @@ public class PostLikeController {
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다.")
     })
     @GetMapping("like-list")
-    public BaseResponse<List<GetLikePostsRes>> getLikeList(@RequestParam("page") int page) throws BaseException {
+    public ResponseEntity<List<GetLikePostsRes>> getLikeList(@RequestParam("page") int page) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postLikeService.getLikeList(page));
+        return new ResponseEntity<>(postLikeService.getLikeList(page),
+                HttpStatus.OK);
     }
 
     /* 좋아요 누른 글 목록 좋아요 취소 API */
@@ -93,10 +97,11 @@ public class PostLikeController {
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
     @PatchMapping("/like-list")
-    public BaseResponse<String> dislikeList(@RequestBody PatchLikePostsReq patchLikePostsReq) throws BaseException {
+    public ResponseEntity<String> dislikeList(@RequestBody PatchLikePostsReq patchLikePostsReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new BaseResponse<>(postLikeService.dislikeList(patchLikePostsReq));
+        return new ResponseEntity<>(postLikeService.dislikeList(patchLikePostsReq),
+                HttpStatus.OK);
     }
 
 }

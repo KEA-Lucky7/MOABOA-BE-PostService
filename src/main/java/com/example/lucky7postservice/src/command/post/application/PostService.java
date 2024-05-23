@@ -223,8 +223,9 @@ public class PostService {
         // 기존 글을 불러와서 수정함
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+        PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
-        post.savePost(postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
+        post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
 
         // 이미 저장되어 있는 해시태그, 소비 내역을 삭제한다
         deleteHashtag(postId);

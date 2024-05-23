@@ -4,16 +4,15 @@ import com.example.lucky7postservice.src.command.comment.domain.Comment;
 import com.example.lucky7postservice.src.command.comment.domain.Reply;
 import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
 import com.example.lucky7postservice.src.command.post.api.dto.*;
-import com.example.lucky7postservice.src.command.post.domain.Hashtag;
-import com.example.lucky7postservice.src.command.post.domain.Post;
-import com.example.lucky7postservice.src.command.post.domain.PostState;
-import com.example.lucky7postservice.src.command.post.domain.Wallet;
+import com.example.lucky7postservice.src.command.post.domain.*;
 import com.example.lucky7postservice.src.command.post.domain.repository.HashtagRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.WalletRepository;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
+import com.example.lucky7postservice.src.query.member.Blog;
 import com.example.lucky7postservice.src.query.member.Member;
+import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
@@ -39,7 +38,9 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
     private final PostLikeRepository likeRepository;
+
     private final MemberQueryRepository memberQueryRepository;
+    private final BlogQueryRepository blogQueryRepository;
 
     public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
         // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
@@ -48,6 +49,8 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // TODO : 블로그 존재 여부 확인
+        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         String nickname = member.getNickname();
 
@@ -69,26 +72,28 @@ public class PostService {
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
-        // TODO : 블로그 존재 여부 확인 (근데 유저가 있는데 블로그가 없을 수 있나?)
-        Long blogId = 1L;
+        // 블로그 존재 여부 확인
+        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // TODO : 대표 해시태그 적용
 
         Post post;
+        PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
         if(postId == 0) {
-            post = postRepository.save(Post.of(memberId, blogId,
-                    postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
+            post = postRepository.save(Post.of(memberId, blog.getId(),
+                    postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
                     PostState.ACTIVE));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.savePost(postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
+            post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
 
             // 이미 저장되어 있는 해시태그를 삭제
             hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));
@@ -112,25 +117,27 @@ public class PostService {
     public PostPostRes savePost(Long postId, PostSavedPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
-        // TODO : 블로그 존재 여부 확인 (근데 유저가 있는데 블로그가 없을 수 있나?)
-        Long blogId = 1L;
+        // 블로그 존재 여부 확인
+        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // TODO : 대표 해시태그 적용
 
         Post post;
+        PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
         if(postId == 0) {
-            post = postRepository.save(Post.saveTemporaryPost(memberId, blogId,
-                    postReq.getTitle(), postReq.getContent(), postReq.getPostType()));
+            post = postRepository.save(Post.saveTemporaryPost(memberId, blog.getId(),
+                    postReq.getTitle(), postReq.getContent(), postType));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent(), postReq.getPostType());
+            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent(), postType);
 
             // 이미 저장되어 있는 해시태그, 소비 내역을 삭제
             deleteHashtag(postId);
@@ -147,8 +154,12 @@ public class PostService {
     public List<GetSavedPostsRes> getSavedPosts() throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         List<Post> postList = postRepository.findAllByMemberIdAndPostState(memberId, PostState.TEMPORARY);
 
@@ -165,8 +176,12 @@ public class PostService {
     public String deletePost(Long postId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // 게시물 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -196,16 +211,21 @@ public class PostService {
     public PostPostRes modifyPost(Long postId, PostPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // TODO : 대표 해시태그 적용
 
         // 기존 글을 불러와서 수정함
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+        PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
-        post.savePost(postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
+        post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
 
         // 이미 저장되어 있는 해시태그, 소비 내역을 삭제한다
         deleteHashtag(postId);

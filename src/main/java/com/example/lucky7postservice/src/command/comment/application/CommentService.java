@@ -33,14 +33,14 @@ public class CommentService {
     public PostCommentRes comment(Long postId, PostCommentReq commentReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
 
         String content = commentReq.getContent().trim();
-        Comment comment = commentRepository.save(Comment.of(1L, post, content));
+        Comment comment = commentRepository.save(Comment.of(memberId, post, content));
 
         return new PostCommentRes(comment.getId());
     }
@@ -49,7 +49,7 @@ public class CommentService {
     public String modifyComment(Long postId, Long commentId, PostCommentReq commentReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
@@ -68,7 +68,7 @@ public class CommentService {
     public String deleteComment(Long postId, Long commentId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 존재하는 글인지 확인
@@ -87,7 +87,7 @@ public class CommentService {
     public PostReplyRes reply(Long postId, Long commentId, PostReplyReq replyReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 글 존재 여부 확인
@@ -99,7 +99,7 @@ public class CommentService {
                 () -> new BaseException(BaseResponseStatus.INVALID_COMMENT));
 
         String content = replyReq.getContent().trim();
-        Reply reply = replyRepository.save(Reply.of(1L, comment, content));
+        Reply reply = replyRepository.save(Reply.of(memberId, comment, content));
 
         return new PostReplyRes(reply.getId());
     }
@@ -108,7 +108,7 @@ public class CommentService {
     public String modifyReply(Long postId, Long commentId, Long replyId, PostReplyReq postReplyReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 글 존재 여부 확인
@@ -133,7 +133,7 @@ public class CommentService {
     public String deleteReply(Long postId, Long commentId, Long replyId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 글 존재 여부 확인

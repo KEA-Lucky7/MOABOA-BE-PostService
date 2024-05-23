@@ -43,7 +43,7 @@ public class PostLikeService {
     public String like(Long postId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 글 존재 여부 확인
@@ -65,7 +65,7 @@ public class PostLikeService {
     public String dislike(Long postId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 글 존재 여부 확인
@@ -118,7 +118,7 @@ public class PostLikeService {
     public String dislikeList(PatchLikePostsReq patchLikePostsReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         List<Long> postIdList = patchLikePostsReq.getPostIdList();

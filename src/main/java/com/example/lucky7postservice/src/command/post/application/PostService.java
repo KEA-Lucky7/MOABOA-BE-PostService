@@ -75,9 +75,8 @@ public class PostService {
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-
 
         // 블로그 존재 여부 확인
         Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
@@ -120,7 +119,7 @@ public class PostService {
     public PostPostRes savePost(Long postId, PostSavedPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 블로그 존재 여부 확인
@@ -156,7 +155,7 @@ public class PostService {
     public List<GetSavedPostsRes> getSavedPosts() throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 블로그 존재 여부 확인
@@ -178,7 +177,7 @@ public class PostService {
     public String deletePost(Long postId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 블로그 존재 여부 확인
@@ -213,7 +212,7 @@ public class PostService {
     public PostPostRes modifyPost(Long postId, PostPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 블로그 존재 여부 확인

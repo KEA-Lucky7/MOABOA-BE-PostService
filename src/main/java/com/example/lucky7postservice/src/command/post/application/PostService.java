@@ -15,7 +15,6 @@ import com.example.lucky7postservice.src.command.like.domain.repository.PostLike
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.src.query.member.Member;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
-import com.example.lucky7postservice.src.query.repository.PostQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,12 +40,16 @@ public class PostService {
     private final ReplyRepository replyRepository;
     private final PostLikeRepository likeRepository;
     private final MemberQueryRepository memberQueryRepository;
-    private final PostQueryRepository postQueryRepository;
 
-    public List<GetHomePostsRes> getHomePosts(int page, int pageSize) {
-        // TODO : 멤버 정보 불러오기
+    public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
+        // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
         Long memberId = 1L;
-        String nickname = "joeun";
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // TODO : 블로그 존재 여부 확인
+
+        String nickname = member.getNickname();
 
         List<Post> postList = postRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
 
@@ -65,10 +67,10 @@ public class PostService {
 
     @Transactional
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
-        Optional<Member> member = memberQueryRepository.findById(memberId);
-        System.out.println(member);
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // TODO : 블로그 존재 여부 확인 (근데 유저가 있는데 블로그가 없을 수 있나?)
         Long blogId = 1L;
@@ -108,8 +110,10 @@ public class PostService {
 
     @Transactional
     public PostPostRes savePost(Long postId, PostSavedPostReq postReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // TODO : 블로그 존재 여부 확인 (근데 유저가 있는데 블로그가 없을 수 있나?)
         Long blogId = 1L;
@@ -140,9 +144,11 @@ public class PostService {
         return new PostPostRes(post.getId());
     }
 
-    public List<GetSavedPostsRes> getSavedPosts() {
-        // TODO : 멤버 존재 여부 확인
+    public List<GetSavedPostsRes> getSavedPosts() throws BaseException {
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         List<Post> postList = postRepository.findAllByMemberIdAndPostState(memberId, PostState.TEMPORARY);
 
@@ -157,7 +163,10 @@ public class PostService {
 
     @Transactional
     public String deletePost(Long postId) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 게시물 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -185,7 +194,10 @@ public class PostService {
 
     @Transactional
     public PostPostRes modifyPost(Long postId, PostPostReq postReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // TODO : 대표 해시태그 적용
 

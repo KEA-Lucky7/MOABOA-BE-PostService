@@ -4,10 +4,7 @@ import com.example.lucky7postservice.src.command.comment.domain.Comment;
 import com.example.lucky7postservice.src.command.comment.domain.Reply;
 import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
 import com.example.lucky7postservice.src.command.post.api.dto.*;
-import com.example.lucky7postservice.src.command.post.domain.Hashtag;
-import com.example.lucky7postservice.src.command.post.domain.Post;
-import com.example.lucky7postservice.src.command.post.domain.PostState;
-import com.example.lucky7postservice.src.command.post.domain.Wallet;
+import com.example.lucky7postservice.src.command.post.domain.*;
 import com.example.lucky7postservice.src.command.post.domain.repository.HashtagRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.WalletRepository;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
@@ -85,17 +82,18 @@ public class PostService {
         // TODO : 대표 해시태그 적용
 
         Post post;
+        PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
         if(postId == 0) {
             post = postRepository.save(Post.of(memberId, blog.getId(),
-                    postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
+                    postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
                     PostState.ACTIVE));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.savePost(postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
+            post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
 
             // 이미 저장되어 있는 해시태그를 삭제
             hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));

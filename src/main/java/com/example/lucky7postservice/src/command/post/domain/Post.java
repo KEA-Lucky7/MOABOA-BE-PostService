@@ -24,7 +24,8 @@ public class Post extends BaseEntity {
     private Long memberId;
     @NotNull
     private Long blogId;
-    private String postType;
+    @Enumerated(EnumType.STRING) @NotNull
+    private PostType postType;
     @NotNull
     private String title;
     @NotNull
@@ -34,7 +35,7 @@ public class Post extends BaseEntity {
     private PostState postState;
 
     public static Post of(Long memberId, Long blogId,
-                          String postType, String title, String content, String thumbnail,
+                          PostType postType, String title, String content, String thumbnail,
                           PostState state) {
         return Post.builder()
                 .memberId(memberId)
@@ -48,7 +49,7 @@ public class Post extends BaseEntity {
     }
 
     public static Post saveTemporaryPost(Long memberId, Long blogId,
-                                String title, String content, String postType) {
+                                String title, String content, PostType postType) {
         return Post.builder()
                 .memberId(memberId)
                 .blogId(blogId)
@@ -59,13 +60,13 @@ public class Post extends BaseEntity {
                 .build();
     }
 
-    public void modifyTemporaryPost(String title, String content, String postType) {
+    public void modifyTemporaryPost(String title, String content, PostType postType) {
         this.title = title;
         this.content = content;
         this.postType = postType;
     }
 
-    public void savePost(String postType, String title, String content, String thumbnail) {
+    public void savePost(PostType postType, String title, String content, String thumbnail) {
         this.postType = postType;
         this.title = title;
         this.content = content;

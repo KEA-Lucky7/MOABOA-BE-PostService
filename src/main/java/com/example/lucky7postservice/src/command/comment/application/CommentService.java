@@ -11,6 +11,8 @@ import com.example.lucky7postservice.src.command.comment.api.dto.PostReplyRes;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
+import com.example.lucky7postservice.src.query.member.Member;
+import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.entity.State;
@@ -25,10 +27,15 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
+    private final MemberQueryRepository memberQueryRepository;
 
     @Transactional
     public PostCommentRes comment(Long postId, PostCommentReq commentReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
 
@@ -40,7 +47,11 @@ public class CommentService {
 
     @Transactional
     public String modifyComment(Long postId, Long commentId, PostCommentReq commentReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
 
@@ -55,7 +66,11 @@ public class CommentService {
 
     @Transactional
     public String deleteComment(Long postId, Long commentId) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
         // 존재하는 글인지 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
@@ -70,7 +85,11 @@ public class CommentService {
 
     @Transactional
     public PostReplyRes reply(Long postId, Long commentId, PostReplyReq replyReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
@@ -87,7 +106,11 @@ public class CommentService {
 
     @Transactional
     public String modifyReply(Long postId, Long commentId, Long replyId, PostReplyReq postReplyReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
@@ -108,7 +131,11 @@ public class CommentService {
 
     @Transactional
     public String deleteReply(Long postId, Long commentId, Long replyId) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));

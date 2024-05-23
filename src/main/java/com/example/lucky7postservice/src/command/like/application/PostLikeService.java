@@ -11,6 +11,8 @@ import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
+import com.example.lucky7postservice.src.query.member.Member;
+import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
@@ -32,21 +34,25 @@ public class PostLikeService {
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
+    private final MemberQueryRepository memberQueryRepository;
 
     @Transactional
     public String like(Long postId) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
         // 글 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
         // 글 좋아요 존재 여부 확인
-        Optional<PostLike> like = postLikeRepository.findByPostIdAndMemberId(postId, 1L);
+        Optional<PostLike> like = postLikeRepository.findByPostIdAndMemberId(postId, memberId);
         if(like.isPresent()) {
             return "이미 좋아요를 눌렀습니다";
         }
 
-        Long memberId = 1L;
         postLikeRepository.save(PostLike.of(memberId, post));
 
         return "좋아요를 눌렀습니다.";
@@ -54,13 +60,17 @@ public class PostLikeService {
 
     @Transactional
     public String dislike(Long postId) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
         // 글 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
         // 글 좋아요 존재 여부 확인
-        PostLike like = postLikeRepository.findByPostIdAndMemberId(postId, 1L)
+        PostLike like = postLikeRepository.findByPostIdAndMemberId(postId, memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST_LIKE));
 
         // 좋아요 삭제
@@ -69,10 +79,12 @@ public class PostLikeService {
         return "글 좋아요를 취소하였습니다.";
     }
 
-    public List<GetLikePostsRes> getLikeList(int page) {
-        // TODO : 멤버 정보 불러오기
+    public List<GetLikePostsRes> getLikeList(int page) throws BaseException {
+        // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
         Long memberId = 1L;
-        String nickname = "joeun";
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        String nickname = member.getNickname();
 
         // TODO : DB 연결되면 빌더가 아닌 쿼리로 한 번에 가져오기
         List<Post> postList = postRepository.findAllByLikeOrderById(PageRequest.of(page, 15));
@@ -97,7 +109,10 @@ public class PostLikeService {
 
     @Transactional
     public String dislikeList(PatchLikePostsReq patchLikePostsReq) throws BaseException {
-        // TODO : 멤버 존재 여부 확인
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        Member member = memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         List<Long> postIdList = patchLikePostsReq.getPostIdList();
         for(Long postId : postIdList) {

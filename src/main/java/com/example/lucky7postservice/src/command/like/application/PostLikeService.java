@@ -11,7 +11,9 @@ import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
+import com.example.lucky7postservice.src.query.member.Blog;
 import com.example.lucky7postservice.src.query.member.Member;
+import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
@@ -35,6 +37,7 @@ public class PostLikeService {
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
     private final MemberQueryRepository memberQueryRepository;
+    private final BlogQueryRepository blogQueryRepository;
 
     @Transactional
     public String like(Long postId) throws BaseException {
@@ -85,6 +88,10 @@ public class PostLikeService {
         Member member = memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
         String nickname = member.getNickname();
+
+        // 블로그 존재 여부 확인
+        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // TODO : DB 연결되면 빌더가 아닌 쿼리로 한 번에 가져오기
         List<Post> postList = postRepository.findAllByLikeOrderById(PageRequest.of(page, 15));

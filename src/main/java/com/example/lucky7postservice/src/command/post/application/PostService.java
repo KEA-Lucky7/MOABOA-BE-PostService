@@ -13,7 +13,9 @@ import com.example.lucky7postservice.src.command.post.domain.repository.WalletRe
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
+import com.example.lucky7postservice.src.query.member.Blog;
 import com.example.lucky7postservice.src.query.member.Member;
+import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
@@ -39,7 +41,9 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
     private final PostLikeRepository likeRepository;
+
     private final MemberQueryRepository memberQueryRepository;
+    private final BlogQueryRepository blogQueryRepository;
 
     public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
         // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
@@ -48,6 +52,8 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // TODO : 블로그 존재 여부 확인
+        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         String nickname = member.getNickname();
 
@@ -72,15 +78,17 @@ public class PostService {
         Member member = memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
-        // TODO : 블로그 존재 여부 확인 (근데 유저가 있는데 블로그가 없을 수 있나?)
-        Long blogId = 1L;
+
+        // 블로그 존재 여부 확인
+        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // TODO : 대표 해시태그 적용
 
         Post post;
 
         if(postId == 0) {
-            post = postRepository.save(Post.of(memberId, blogId,
+            post = postRepository.save(Post.of(memberId, blog.getId(),
                     postReq.getPostType(), postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
                     PostState.ACTIVE));
         } else {
@@ -115,15 +123,16 @@ public class PostService {
         Member member = memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
-        // TODO : 블로그 존재 여부 확인 (근데 유저가 있는데 블로그가 없을 수 있나?)
-        Long blogId = 1L;
+        // 블로그 존재 여부 확인
+        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // TODO : 대표 해시태그 적용
 
         Post post;
 
         if(postId == 0) {
-            post = postRepository.save(Post.saveTemporaryPost(memberId, blogId,
+            post = postRepository.save(Post.saveTemporaryPost(memberId, blog.getId(),
                     postReq.getTitle(), postReq.getContent(), postReq.getPostType()));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
@@ -150,6 +159,10 @@ public class PostService {
         Member member = memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
         List<Post> postList = postRepository.findAllByMemberIdAndPostState(memberId, PostState.TEMPORARY);
 
         return postList.stream()
@@ -167,6 +180,10 @@ public class PostService {
         Long memberId = 1L;
         Member member = memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // 게시물 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -198,6 +215,10 @@ public class PostService {
         Long memberId = 1L;
         Member member = memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // TODO : 대표 해시태그 적용
 

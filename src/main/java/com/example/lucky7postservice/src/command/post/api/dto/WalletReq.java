@@ -13,7 +13,7 @@ public class WalletReq {
     @Schema(description = "소비 금액", example = "100000")
     private int amount;
     @NotBlank(message="소비/수입 여부를 입력해야 합니다.")
-    @Pattern(regexp = "^(income|outcome)$", message = "income 혹은 outcome으로 입력해야 합니다")
-    @Schema(description = "소비/수입 여부", example = "income/outcome")
+    @Pattern(regexp = "^(FOOD|TRAFFIC|LEISURE|EDUCATION|LIFE|FINANCE)$", message = "FOOD, TRAFFIC, LEISURE, EDUCATION, LIFE, FINANCE만 가능합니다")
+    @Schema(description = "소비 태그", example = "FOOD, TRAFFIC, LEISURE, EDUCATION, LIFE, FINANCE")
     private String walletType;
 }

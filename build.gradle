@@ -36,9 +36,12 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	implementation 'com.jcraft:jsch:0.1.55'
+
 	// Database
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'org.mariadb.jdbc:mariadb-java-client'
 
 	// Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'

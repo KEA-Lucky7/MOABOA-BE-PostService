@@ -107,7 +107,7 @@ public class PostService {
         // 소비 내역 저장
         for(WalletReq wallet : postReq.getWalletList()) {
             walletRepository.save(Wallet.of(memberId, post,
-                    wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
+                    SetTime.stringToLocalDate(wallet.getConsumedDate()), wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
         }
 
         return new PostPostRes(post.getId());
@@ -255,7 +255,8 @@ public class PostService {
         // 새로운 소비 내역 저장
         for(WalletReq wallet : walletList) {
             walletRepository.save(
-                    Wallet.of(post.getMemberId(), post, wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType())
+                    Wallet.of(post.getMemberId(), post,
+                            SetTime.stringToLocalDate(wallet.getConsumedDate()), wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType())
             );
         }
     }

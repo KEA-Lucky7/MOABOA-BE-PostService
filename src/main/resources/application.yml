@@ -8,11 +8,11 @@ spring:
   # Database
   datasource:
     query:
-      jdbc-url: ${QUERY-DB-ADDRESS}:3306/moaboa
+      jdbc-url: jdbc:mysql://${QUERY-DB-ADDRESS}:3306/moaboa
       username: ${QUERY-DB-HOST}
       password: ${QUERY-DB-PASSWORD}
     command:
-      jdbc-url: ${COMMAND-DB-ADDRESS}:3306/post
+      jdbc-url: jdbc:mysql://${COMMAND-DB-ADDRESS}:3306/post
       username: ${COMMAND-DB-HOST}
       password: ${COMMAND-DB-PASSWORD}
 

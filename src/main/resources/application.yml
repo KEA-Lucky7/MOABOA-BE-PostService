@@ -8,7 +8,7 @@ spring:
   # Database
   datasource:
     query:
-      jdbc-url: ${QUERY-DB-ADDRESS}/command
+      jdbc-url: ${QUERY-DB-ADDRESS}/moaboa
       username: ${QUERY-DB-HOST}
       password: ${QUERY-DB-PASSWORD}
     command:

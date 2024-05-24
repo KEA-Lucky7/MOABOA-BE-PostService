@@ -86,14 +86,14 @@ public class PostService {
 
         if(postId == 0) {
             post = postRepository.save(Post.of(memberId, blog.getId(),
-                    postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(),
+                    postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(), postReq.getMainHashtag(),
                     PostState.ACTIVE));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
+            post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(), postReq.getMainHashtag());
 
             // 이미 저장되어 있는 해시태그를 삭제
             hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));
@@ -225,7 +225,7 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
         PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
-        post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail());
+        post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(), postReq.getMainHashtag());
 
         // 이미 저장되어 있는 해시태그, 소비 내역을 삭제한다
         deleteHashtag(postId);

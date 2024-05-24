@@ -31,11 +31,13 @@ public class Post extends BaseEntity {
     @NotNull
     private String content;
     private String thumbnail;
+    @NotNull
+    private String mainHashtag;
     @Enumerated(EnumType.STRING) @NotNull
     private PostState postState;
 
     public static Post of(Long memberId, Long blogId,
-                          PostType postType, String title, String content, String thumbnail,
+                          PostType postType, String title, String content, String thumbnail, String mainHashtag,
                           PostState state) {
         return Post.builder()
                 .memberId(memberId)
@@ -44,6 +46,7 @@ public class Post extends BaseEntity {
                 .title(title)
                 .content(content)
                 .thumbnail(thumbnail)
+                .mainHashtag(mainHashtag)
                 .postState(state)
                 .build();
     }
@@ -66,11 +69,12 @@ public class Post extends BaseEntity {
         this.postType = postType;
     }
 
-    public void savePost(PostType postType, String title, String content, String thumbnail) {
+    public void savePost(PostType postType, String title, String content, String thumbnail, String mainHashtag) {
         this.postType = postType;
         this.title = title;
         this.content = content;
         this.thumbnail = thumbnail;
+        this.mainHashtag = mainHashtag;
         this.postState = PostState.ACTIVE;
     }
 

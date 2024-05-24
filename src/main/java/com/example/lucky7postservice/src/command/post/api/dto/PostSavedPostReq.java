@@ -20,6 +20,9 @@ public class PostSavedPostReq {
     @Pattern(regexp = "^(FREE|WALLET)$", message = "FREE 혹은 WALLET으로 입력해야 합니다")
     @Schema(description = "자유글/가계부 여부", example = "FREE/WALLET")
     private String postType;
+    @NotBlank(message="대표 해시태그는 필수입니다.")
+    @Schema(description = "대표 해시태그", example = "야구")
+    private String mainHashtag;
     @Schema(description = "해시태그 리스트", example = "야구, 운동, 소비기록")
     private List<String> hashtagList;
     @Valid @Schema(description = "소비/수입 기록", example = "")

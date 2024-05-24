@@ -107,7 +107,7 @@ public class PostLikeService {
                 commentCnt += replyList.size();
             }
 
-            likePostList.add(new GetLikePostsRes(post.getId(), post.getTitle(), post.getThumbnail(),
+            likePostList.add(new GetLikePostsRes(post.getId(), post.getTitle(), post.getThumbnail(), post.getMainHashtag(),
                     memberId, nickname, commentCnt, postLikeList.size(), SetTime.timestampToString(post.getCreatedAt())));
         }
 

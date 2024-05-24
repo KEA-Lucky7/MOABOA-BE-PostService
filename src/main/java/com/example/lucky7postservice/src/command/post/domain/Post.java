@@ -31,11 +31,13 @@ public class Post extends BaseEntity {
     @NotNull
     private String content;
     private String thumbnail;
+    @NotNull
+    private String mainHashtag;
     @Enumerated(EnumType.STRING) @NotNull
     private PostState postState;
 
     public static Post of(Long memberId, Long blogId,
-                          PostType postType, String title, String content, String thumbnail,
+                          PostType postType, String title, String content, String thumbnail, String mainHashtag,
                           PostState state) {
         return Post.builder()
                 .memberId(memberId)
@@ -44,33 +46,38 @@ public class Post extends BaseEntity {
                 .title(title)
                 .content(content)
                 .thumbnail(thumbnail)
+                .mainHashtag(mainHashtag)
                 .postState(state)
                 .build();
     }
 
     public static Post saveTemporaryPost(Long memberId, Long blogId,
-                                String title, String content, PostType postType) {
+                                String title, String content, String mainHashtag,
+                                         PostType postType) {
         return Post.builder()
                 .memberId(memberId)
                 .blogId(blogId)
                 .title(title)
                 .content(content)
+                .mainHashtag(mainHashtag)
                 .postType(postType)
                 .postState(PostState.TEMPORARY)
                 .build();
     }
 
-    public void modifyTemporaryPost(String title, String content, PostType postType) {
+    public void modifyTemporaryPost(String title, String content, String mainHashtag, PostType postType) {
         this.title = title;
         this.content = content;
+        this.mainHashtag = mainHashtag;
         this.postType = postType;
     }
 
-    public void savePost(PostType postType, String title, String content, String thumbnail) {
+    public void savePost(PostType postType, String title, String content, String thumbnail, String mainHashtag) {
         this.postType = postType;
         this.title = title;
         this.content = content;
         this.thumbnail = thumbnail;
+        this.mainHashtag = mainHashtag;
         this.postState = PostState.ACTIVE;
     }
 

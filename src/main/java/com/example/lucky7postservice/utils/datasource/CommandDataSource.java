@@ -45,10 +45,9 @@ public class CommandDataSource {
         em.setJpaVendorAdapter(vendorAdapter);
 
         HashMap<String, Object> prop = new HashMap<>();
-        prop.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         prop.put("hibernate.hbm2ddl.auto", "none");
         prop.put("hibernate.format_sql", true);
-        prop.put("hibernate.show_sql", true);
+        prop.put("hibernate.show_sql", false);
         prop.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
         em.setJpaPropertyMap(prop);
 

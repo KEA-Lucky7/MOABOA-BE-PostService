@@ -61,6 +61,7 @@ public class PostService {
                         .postId(d.getId())
                         .title(d.getTitle())
                         .thumbnail(d.getThumbnail())
+                        .mainHashtag(d.getMainHashtag())
                         .memberId(memberId)
                         .nickname(nickname)
                         .createdAt(SetTime.timestampToString(d.getCreatedAt()))

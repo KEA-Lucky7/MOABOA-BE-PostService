@@ -79,8 +79,6 @@ public class PostService {
         Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
-        // TODO : 대표 해시태그 적용
-
         Post post;
         PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
@@ -124,20 +122,18 @@ public class PostService {
         Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
-        // TODO : 대표 해시태그 적용
-
         Post post;
         PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
         if(postId == 0) {
             post = postRepository.save(Post.saveTemporaryPost(memberId, blog.getId(),
-                    postReq.getTitle(), postReq.getContent(), postType));
+                    postReq.getTitle(), postReq.getContent(), postReq.getMainHashtag(), postType));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent(), postType);
+            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent(), postReq.getMainHashtag(), postType);
 
             // 이미 저장되어 있는 해시태그, 소비 내역을 삭제
             deleteHashtag(postId);

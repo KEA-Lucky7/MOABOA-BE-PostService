@@ -52,20 +52,23 @@ public class Post extends BaseEntity {
     }
 
     public static Post saveTemporaryPost(Long memberId, Long blogId,
-                                String title, String content, PostType postType) {
+                                String title, String content, String mainHashtag,
+                                         PostType postType) {
         return Post.builder()
                 .memberId(memberId)
                 .blogId(blogId)
                 .title(title)
                 .content(content)
+                .mainHashtag(mainHashtag)
                 .postType(postType)
                 .postState(PostState.TEMPORARY)
                 .build();
     }
 
-    public void modifyTemporaryPost(String title, String content, PostType postType) {
+    public void modifyTemporaryPost(String title, String content, String mainHashtag, PostType postType) {
         this.title = title;
         this.content = content;
+        this.mainHashtag = mainHashtag;
         this.postType = postType;
     }
 

@@ -14,6 +14,8 @@ public class GetHomePostsRes {
     private String thumbnail;
     @Schema(description = "게시물 대표 해시태그", example = "야구")
     private String mainHashtag;
+    @Schema(description = "작성자 블로그 아이디", example = "1")
+    private Long blogId;
     @Schema(description = "작성자 아이디", example = "1")
     private Long memberId;
     @Schema(description = "작성자 닉네임", example = "조은")
@@ -23,11 +25,12 @@ public class GetHomePostsRes {
 
     @Builder
     public GetHomePostsRes(Long postId, String title, String thumbnail, String mainHashtag,
-                           Long memberId, String nickname, String createdAt) {
+                           Long blogId, Long memberId, String nickname, String createdAt) {
         this.postId = postId;
         this.title = title;
         this.thumbnail = thumbnail;
         this.mainHashtag = mainHashtag;
+        this.blogId = blogId;
         this.memberId = memberId;
         this.nickname = nickname;
         this.createdAt = createdAt;

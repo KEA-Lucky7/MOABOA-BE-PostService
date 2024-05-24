@@ -7,6 +7,9 @@ import lombok.Getter;
 
 @Getter
 public class WalletReq {
+    @NotBlank(message="소비 내역 날짜를 입력해야 합니다.")
+    @Schema(description = "소비 내역 날짜", example = "2024-05-24")
+    private String consumedDate;
     @NotBlank(message="소비 내역 메모를 입력해야 합니다.")
     @Schema(description = "소비 내역 메모", example = "드럼 결제")
     private String memo;

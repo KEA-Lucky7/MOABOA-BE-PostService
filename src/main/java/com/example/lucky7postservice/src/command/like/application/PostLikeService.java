@@ -108,7 +108,7 @@ public class PostLikeService {
             }
 
             likePostList.add(new GetLikePostsRes(post.getId(), post.getTitle(), post.getThumbnail(), post.getMainHashtag(),
-                    memberId, nickname, commentCnt, postLikeList.size(), SetTime.timestampToString(post.getCreatedAt())));
+                    blog.getId(), memberId, nickname, commentCnt, postLikeList.size(), SetTime.timestampToString(post.getCreatedAt())));
         }
 
         return likePostList;

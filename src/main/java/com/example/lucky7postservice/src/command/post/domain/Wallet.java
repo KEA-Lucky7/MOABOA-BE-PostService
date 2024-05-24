@@ -8,6 +8,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDate;
 
 @Entity
 @SuperBuilder
@@ -20,6 +23,8 @@ public class Wallet extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
     @NotNull
+    private LocalDate consumedDate;
+    @NotNull
     private String memo;
     private int amount;
     @NotNull
@@ -28,10 +33,11 @@ public class Wallet extends BaseEntity {
     private State state;
 
     public static Wallet of(Long memberId, Post post,
-                            String memo, int amount, String walletType) {
+                            LocalDate consumedDate, String memo, int amount, String walletType) {
         return Wallet.builder()
                 .memberId(memberId)
                 .post(post)
+                .consumedDate(consumedDate)
                 .memo(memo)
                 .amount(amount)
                 .walletType(walletType)

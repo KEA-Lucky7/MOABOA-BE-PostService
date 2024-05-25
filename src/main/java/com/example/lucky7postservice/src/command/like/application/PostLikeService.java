@@ -11,8 +11,8 @@ import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
-import com.example.lucky7postservice.src.query.member.Blog;
-import com.example.lucky7postservice.src.query.member.Member;
+import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
+import com.example.lucky7postservice.src.query.entity.member.QueryMember;
 import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
@@ -85,12 +85,12 @@ public class PostLikeService {
     public List<GetLikePostsRes> getLikeList(int page) throws BaseException {
         // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        QueryMember queryMember = memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-        String nickname = member.getNickname();
+        String nickname = queryMember.getNickname();
 
         // 블로그 존재 여부 확인
-        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+        QueryBlog queryBlog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // TODO : DB 연결되면 빌더가 아닌 쿼리로 한 번에 가져오기
@@ -108,7 +108,7 @@ public class PostLikeService {
             }
 
             likePostList.add(new GetLikePostsRes(post.getId(), post.getTitle(), post.getThumbnail(), post.getMainHashtag(),
-                    blog.getId(), memberId, nickname, commentCnt, postLikeList.size(), SetTime.timestampToString(post.getCreatedAt())));
+                    queryBlog.getId(), memberId, nickname, commentCnt, postLikeList.size(), SetTime.timestampToString(post.getCreatedAt())));
         }
 
         return likePostList;

@@ -18,6 +18,7 @@ import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
 import com.example.lucky7postservice.utils.entity.State;
+import com.example.lucky7postservice.utils.kafka.PostProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +42,8 @@ public class PostService {
 
     private final MemberQueryRepository memberQueryRepository;
     private final BlogQueryRepository blogQueryRepository;
+
+    private final PostProducer postProducer;
 
     public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
         // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
@@ -109,6 +112,8 @@ public class PostService {
             walletRepository.save(Wallet.of(memberId, post,
                     SetTime.stringToLocalDate(wallet.getConsumedDate()), wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
         }
+
+        postProducer.send("post", post);
 
         return new PostPostRes(post.getId());
     }

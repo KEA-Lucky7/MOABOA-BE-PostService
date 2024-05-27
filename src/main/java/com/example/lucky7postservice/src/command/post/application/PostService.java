@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -57,6 +56,27 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
+    }
+
+    public GetBlogPostsRes getBlogPosts(int page, Long blogId) throws BaseException {
+        // TODO : memberId 받아와서 적용
+        Long memberId = 1L;
+        memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 존재 여부 확인
+        QueryBlog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        // 블로그 주인 존재 여부 확인
+        Long blogMemberId = blog.getMember().getId();
+        memberQueryRepository.findById(blogMemberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG_USER));
+
+        List<GetPosts> posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
+
+        return new GetBlogPostsRes(blog.getId(), blogMemberId,
+                posts.size(), posts);
     }
 
     @Transactional

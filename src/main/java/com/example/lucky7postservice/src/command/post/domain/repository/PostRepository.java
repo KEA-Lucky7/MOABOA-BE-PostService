@@ -13,7 +13,6 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndPostState(Long id, PostState state);
-    List<Post> findAllByMemberIdAndPostState(Long memberId, PostState state);
 
     @Query(value = "select p from Post as p \n" +
             "inner join PostLike as l on p.id=l.post.id \n" +

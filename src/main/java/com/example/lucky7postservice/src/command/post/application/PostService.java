@@ -57,19 +57,6 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
-
-//        return postList.stream()
-//                .map(d -> GetHomePostsRes.builder()
-//                        .postId(d.getId())
-//                        .title(d.getTitle())
-//                        .thumbnail(d.getThumbnail())
-//                        .mainHashtag(d.getMainHashtag())
-//                        .blogId(blog.getId())
-//                        .memberId(memberId)
-//                        .nickname(nickname)
-//                        .createdAt(SetTime.timestampToString(d.getCreatedAt()))
-//                        .build())
-//                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -163,15 +150,7 @@ public class PostService {
         blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
-        List<Post> postList = postRepository.findAllByMemberIdAndPostState(memberId, PostState.TEMPORARY);
-
-        return postList.stream()
-                .map(d -> GetSavedPostsRes.builder()
-                        .postId(d.getId())
-                        .title(d.getTitle())
-                        .updatedAt(SetTime.timestampToString(d.getUpdatedAt()))
-                        .build())
-                .collect(Collectors.toList());
+        return postQueryRepository.findAllTemporaryPosts(memberId);
     }
 
     @Transactional

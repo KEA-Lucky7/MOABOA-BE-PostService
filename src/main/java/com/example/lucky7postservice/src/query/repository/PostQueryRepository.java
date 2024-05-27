@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.src.query.repository;
 
+import com.example.lucky7postservice.src.command.like.api.dto.GetLikePostsRes;
 import com.example.lucky7postservice.src.command.post.api.dto.GetBlogPostsRes;
 import com.example.lucky7postservice.src.command.post.api.dto.GetHomePostsRes;
 import com.example.lucky7postservice.src.command.post.api.dto.GetPosts;
@@ -52,4 +53,19 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             where p.member.id=:memberId and p.postState='TEMPORARY'\s
             order by p.updatedAt desc\s""")
     List<GetSavedPostsRes> findAllTemporaryPosts(Long memberId);
+
+    @Query(value = """
+            select distinct p.id as postId, p.title as title, p.thumbnail as thumbnail, p.mainHashtag as mainHashtag,\s
+            p.blog.id as blogId, p.member.id as memberId, p.member.nickname as nickname,\s
+            count(distinct c.id) + count(distinct r.id) as commentCnt,\s
+            count(distinct l.id) as likeCnt,\s
+            DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt\s
+            from post as p\s
+            left join post_like as l on l.post.id=p.id\s
+            left join comment as c on c.post.id=p.id and c.state='ACTIVE'\s
+            left join reply as r on r.comment.id=c.id and r.state='ACTIVE'\s
+            where p.postState='ACTIVE' and l.member.id=:memberId\s
+            group by p.id\s
+            order by p.createdAt desc""")
+    List<GetLikePostsRes> findAllByLikeOrderById(Long memberId, Pageable pageable);
 }

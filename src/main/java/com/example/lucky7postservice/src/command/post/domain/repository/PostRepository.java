@@ -13,10 +13,4 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndPostState(Long id, PostState state);
-
-    @Query(value = "select p from Post as p \n" +
-            "inner join PostLike as l on p.id=l.post.id \n" +
-            "where p.postState='ACTIVE' \n" +
-            "order by p.id")
-    List<Post> findAllByLikeOrderById(Pageable pageable);
 }

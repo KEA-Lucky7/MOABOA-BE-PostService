@@ -15,6 +15,7 @@ import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
 import com.example.lucky7postservice.src.query.entity.member.QueryMember;
 import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
+import com.example.lucky7postservice.src.query.repository.PostQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
@@ -36,8 +37,10 @@ public class PostLikeService {
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
+
     private final MemberQueryRepository memberQueryRepository;
     private final BlogQueryRepository blogQueryRepository;
+    private final PostQueryRepository postQueryRepository;
 
     @Transactional
     public String like(Long postId) throws BaseException {
@@ -85,33 +88,16 @@ public class PostLikeService {
     public List<GetLikePostsRes> getLikeList(int page) throws BaseException {
         // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
         Long memberId = 1L;
-        QueryMember queryMember = memberQueryRepository.findById(memberId)
+
+        // 멤버 존재 여부 확인
+        memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-        String nickname = queryMember.getNickname();
 
         // 블로그 존재 여부 확인
-        QueryBlog queryBlog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
-        // TODO : DB 연결되면 빌더가 아닌 쿼리로 한 번에 가져오기
-        List<Post> postList = postRepository.findAllByLikeOrderById(PageRequest.of(page, 15));
-
-        List<GetLikePostsRes> likePostList = new ArrayList<>();
-        for(Post post : postList) {
-            List<PostLike> postLikeList = postLikeRepository.findAllByPostId(post.getId());
-            List<Comment> commentList = commentRepository.findAllByPostIdAndState(post.getId(), State.ACTIVE);
-
-            int commentCnt = commentList.size();
-            for(Comment comment : commentList) {
-                List<Reply> replyList = replyRepository.findAllByCommentIdAndState(comment.getId(), State.ACTIVE);
-                commentCnt += replyList.size();
-            }
-
-            likePostList.add(new GetLikePostsRes(post.getId(), post.getTitle(), post.getThumbnail(), post.getMainHashtag(),
-                    queryBlog.getId(), memberId, nickname, commentCnt, postLikeList.size(), SetTime.timestampToString(post.getCreatedAt())));
-        }
-
-        return likePostList;
+        return postQueryRepository.findAllByLikeOrderById(memberId, PageRequest.of(page, 15));
     }
 
     @Transactional

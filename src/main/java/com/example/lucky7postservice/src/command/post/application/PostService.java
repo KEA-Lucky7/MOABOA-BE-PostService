@@ -119,7 +119,7 @@ public class PostService {
                     SetTime.stringToLocalDate(wallet.getConsumedDate()), wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
         }
 
-        postProducer.send("post", post);
+//        postProducer.send("post", post);
 
         return new PostPostRes(post.getId());
     }

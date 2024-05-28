@@ -62,7 +62,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다.")
     })
-    @GetMapping("/post-list/{blogId}")
+    @GetMapping("/{blogId}/post-list")
     public ResponseEntity<GetBlogPostsRes> getHomePosts(@RequestParam("page") int page, @PathVariable("blogId") Long blogId, @RequestParam("hashtag") String hashtag) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 

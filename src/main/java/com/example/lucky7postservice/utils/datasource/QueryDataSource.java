@@ -40,6 +40,7 @@ public class QueryDataSource {
         em.setJpaVendorAdapter(vendorAdapter);
 
         HashMap<String, Object> prop = new HashMap<>();
+        prop.put("properties.hibernate.dialect", "org.hibernate.dialect.MariaDBDialect");
         prop.put("hibernate.hbm2ddl.auto", "none");
         prop.put("hibernate.format_sql", true);
         prop.put("hibernate.show_sql", false);

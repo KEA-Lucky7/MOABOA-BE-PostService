@@ -14,7 +14,7 @@ public interface GetPosts {
     @Schema(description = "게시물 제목", example = "제목입니다")
     String getTitle();
     @Schema(description = "게시물 글 미리보기", example = "와랄라")
-    String getContent();
+    String getPreview();
     @Schema(description = "게시물 대표 사진", example = "링크")
     String getThumbnail();
     @Schema(description = "게시물 작성 날짜", example = "24.05.16")

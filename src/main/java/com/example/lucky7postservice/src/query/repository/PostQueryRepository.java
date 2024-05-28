@@ -35,7 +35,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
               else '소비 일기'\s
             end as postType,\s
             p.mainHashtag as mainHashtag,\s
-            p.title as title, p.content as content, p.thumbnail as thumbnail,\s
+            p.title as title, p.preview as preview, p.thumbnail as thumbnail,\s
             DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt,\s
             count(distinct c.id) + count(distinct r.id) as commentCnt,\s
             count(l.id) as likeCnt\s

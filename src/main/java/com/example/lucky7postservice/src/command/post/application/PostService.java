@@ -25,7 +25,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -52,11 +51,26 @@ public class PostService {
         memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
-        // TODO : 블로그 존재 여부 확인
+        // 블로그 존재 여부 확인
         blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
+    }
+
+    public GetHashtagsRes getHashtags(Long blogId) throws BaseException {
+        // 블로그 존재 여부 확인
+        QueryBlog blog = blogQueryRepository.findByIdAndState(blogId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        // 블로그 주인장 존재 여부 확인
+        memberQueryRepository.findById(blog.getMember().getId())
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        List<String> freeList = postQueryRepository.findAllHashtagByBlogId(blogId, PostType.FREE);
+        List<String> walletList = postQueryRepository.findAllHashtagByBlogId(blogId, PostType.WALLET);
+
+        return new GetHashtagsRes(freeList, walletList);
     }
 
     public GetBlogPostsRes getBlogPosts(int page, Long blogId, String hashtag) throws BaseException {

@@ -149,7 +149,8 @@ public class PostService {
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent(), postReq.getMainHashtag(), postType);
+            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent(),
+                    postReq.getPreview(), postReq.getMainHashtag(), postType);
 
             // 이미 저장되어 있는 해시태그, 소비 내역을 삭제
             deleteHashtag(postId);

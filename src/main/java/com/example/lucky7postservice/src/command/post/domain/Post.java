@@ -69,9 +69,11 @@ public class Post extends BaseEntity {
                 .build();
     }
 
-    public void modifyTemporaryPost(String title, String content, String mainHashtag, PostType postType) {
+    public void modifyTemporaryPost(String title, String content, String preview,
+                                    String mainHashtag, PostType postType) {
         this.title = title;
         this.content = content;
+        this.preview = preview;
         this.mainHashtag = mainHashtag;
         this.postType = postType;
     }

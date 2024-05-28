@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -58,7 +59,7 @@ public class PostService {
         return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
     }
 
-    public GetBlogPostsRes getBlogPosts(int page, Long blogId) throws BaseException {
+    public GetBlogPostsRes getBlogPosts(int page, Long blogId, String hashtag) throws BaseException {
         // TODO : memberId 받아와서 적용
         Long memberId = 1L;
         memberQueryRepository.findById(memberId)
@@ -73,7 +74,12 @@ public class PostService {
         memberQueryRepository.findById(blogMemberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG_USER));
 
-        List<GetPosts> posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
+        List<GetPosts> posts;
+        if(hashtag.equals("ALL")) {
+            posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
+        } else {
+            posts = postQueryRepository.findAllBlogPostsWithHashtag(blogId, PageRequest.of(page, 15), hashtag);
+        }
 
         return new GetBlogPostsRes(blog.getId(), blogMemberId,
                 posts.size(), posts);
@@ -95,14 +101,16 @@ public class PostService {
 
         if(postId == 0) {
             post = postRepository.save(Post.of(memberId, queryBlog.getId(),
-                    postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(), postReq.getMainHashtag(),
+                    postType, postReq.getTitle(), postReq.getContent(), postReq.getPreview(),
+                    postReq.getThumbnail(), postReq.getMainHashtag(),
                     PostState.ACTIVE));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(), postReq.getMainHashtag());
+            post.savePost(postType, postReq.getTitle(), postReq.getContent(),
+                    postReq.getPreview(), postReq.getThumbnail(), postReq.getMainHashtag());
 
             // 이미 저장되어 있는 해시태그를 삭제
             hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));
@@ -140,13 +148,15 @@ public class PostService {
 
         if(postId == 0) {
             post = postRepository.save(Post.saveTemporaryPost(memberId, queryBlog.getId(),
-                    postReq.getTitle(), postReq.getContent(), postReq.getMainHashtag(), postType));
+                    postReq.getTitle(), postReq.getContent(), postReq.getPreview(),
+                    postReq.getMainHashtag(), postType));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                     .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
-            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent(), postReq.getMainHashtag(), postType);
+            post.modifyTemporaryPost(postReq.getTitle(), postReq.getContent(),
+                    postReq.getPreview(), postReq.getMainHashtag(), postType);
 
             // 이미 저장되어 있는 해시태그, 소비 내역을 삭제
             deleteHashtag(postId);
@@ -226,7 +236,8 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
         PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
-        post.savePost(postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(), postReq.getMainHashtag());
+        post.savePost(postType, postReq.getTitle(), postReq.getContent(),
+                postReq.getPreview(), postReq.getThumbnail(), postReq.getMainHashtag());
 
         // 이미 저장되어 있는 해시태그, 소비 내역을 삭제한다
         deleteHashtag(postId);

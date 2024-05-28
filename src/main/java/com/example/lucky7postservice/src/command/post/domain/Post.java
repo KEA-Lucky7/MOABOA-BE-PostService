@@ -30,6 +30,7 @@ public class Post extends BaseEntity {
     private String title;
     @NotNull
     private String content;
+    private String preview;
     private String thumbnail;
     @NotNull
     private String mainHashtag;
@@ -37,7 +38,8 @@ public class Post extends BaseEntity {
     private PostState postState;
 
     public static Post of(Long memberId, Long blogId,
-                          PostType postType, String title, String content, String thumbnail, String mainHashtag,
+                          PostType postType, String title, String content, String preview,
+                          String thumbnail, String mainHashtag,
                           PostState state) {
         return Post.builder()
                 .memberId(memberId)
@@ -45,6 +47,7 @@ public class Post extends BaseEntity {
                 .postType(postType)
                 .title(title)
                 .content(content)
+                .preview(preview)
                 .thumbnail(thumbnail)
                 .mainHashtag(mainHashtag)
                 .postState(state)
@@ -52,30 +55,34 @@ public class Post extends BaseEntity {
     }
 
     public static Post saveTemporaryPost(Long memberId, Long blogId,
-                                String title, String content, String mainHashtag,
-                                         PostType postType) {
+                                         String title, String content, String preview,
+                                         String mainHashtag, PostType postType) {
         return Post.builder()
                 .memberId(memberId)
                 .blogId(blogId)
                 .title(title)
                 .content(content)
+                .preview(preview)
                 .mainHashtag(mainHashtag)
                 .postType(postType)
                 .postState(PostState.TEMPORARY)
                 .build();
     }
 
-    public void modifyTemporaryPost(String title, String content, String mainHashtag, PostType postType) {
+    public void modifyTemporaryPost(String title, String content, String preview,
+                                    String mainHashtag, PostType postType) {
         this.title = title;
         this.content = content;
+        this.preview = preview;
         this.mainHashtag = mainHashtag;
         this.postType = postType;
     }
 
-    public void savePost(PostType postType, String title, String content, String thumbnail, String mainHashtag) {
+    public void savePost(PostType postType, String title, String content, String preview, String thumbnail, String mainHashtag) {
         this.postType = postType;
         this.title = title;
         this.content = content;
+        this.preview = preview;
         this.thumbnail = thumbnail;
         this.mainHashtag = mainHashtag;
         this.postState = PostState.ACTIVE;

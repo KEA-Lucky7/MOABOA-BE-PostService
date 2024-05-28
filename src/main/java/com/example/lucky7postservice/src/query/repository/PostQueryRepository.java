@@ -20,7 +20,8 @@ import java.util.List;
 public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
     @Query(value = """
             select p.id as postId,\s
-            p.title as title, p.thumbnail as thumbnail, p.mainHashtag as mainHashtag,\s
+            p.title as title, p.preview,\s
+            p.thumbnail as thumbnail, p.mainHashtag as mainHashtag,\s
             p.blog.id as blogId, p.member.id as memberId, p.member.nickname as nickname,\s
             DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt from post as p\s
             where p.postState='ACTIVE'\s

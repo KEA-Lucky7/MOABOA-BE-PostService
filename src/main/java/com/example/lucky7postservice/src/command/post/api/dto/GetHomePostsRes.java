@@ -8,6 +8,8 @@ public interface GetHomePostsRes {
     Long getPostId();
     @Schema(description = "게시물 제목", example = "제목입니다")
     String getTitle();
+    @Schema(description = "게시물 미리보기", example = "미리보기")
+    String getPreview();
     @Schema(description = "게시물 대표 사진", example = "링크")
     String getThumbnail();
     @Schema(description = "게시물 대표 해시태그", example = "야구")

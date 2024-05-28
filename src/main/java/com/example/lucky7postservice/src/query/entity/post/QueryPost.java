@@ -33,6 +33,7 @@ public class QueryPost extends BaseEntity {
     private String title;
     @NotNull
     private String content;
+    private String preview;
     private String thumbnail;
     @NotNull
     private String mainHashtag;

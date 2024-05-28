@@ -1,17 +1,12 @@
 package com.example.lucky7postservice.src.query.repository;
 
 import com.example.lucky7postservice.src.command.like.api.dto.GetLikePostsRes;
-import com.example.lucky7postservice.src.command.post.api.dto.GetBlogPostsRes;
-import com.example.lucky7postservice.src.command.post.api.dto.GetHomePostsRes;
-import com.example.lucky7postservice.src.command.post.api.dto.GetPosts;
-import com.example.lucky7postservice.src.command.post.api.dto.GetSavedPostsRes;
-import com.example.lucky7postservice.src.command.post.domain.Post;
-import com.example.lucky7postservice.src.command.post.domain.PostState;
+import com.example.lucky7postservice.src.command.post.api.dto.*;
+import com.example.lucky7postservice.src.command.post.domain.PostType;
 import com.example.lucky7postservice.src.query.entity.post.QueryPost;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,6 +22,13 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             where p.postState='ACTIVE'\s
             order by (select count(l) from post_like as l where l.post.id = p.id) desc, p.id asc\s""")
     List<GetHomePostsRes> findAllOrderByLikeCnt(Pageable pageable);
+
+    @Query(value = """
+            select distinct p.mainHashtag as hashtag\s
+            from post as p\s
+            where p.blog.id=:blogId and p.postType=:postType and p.postState='ACTIVE'\s
+            order by p.mainHashtag""")
+    List<String> findAllHashtagByBlogId(Long blogId, PostType postType);
 
     @Query(value = """
             select p.id as postId, p.member.id as memberId,\s

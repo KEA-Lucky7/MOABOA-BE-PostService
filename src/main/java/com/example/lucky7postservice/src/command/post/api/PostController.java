@@ -49,10 +49,10 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다.")
     })
     @GetMapping("/post-list/{blogId}")
-    public ResponseEntity<GetBlogPostsRes> getHomePosts(@RequestParam("page") int page, @PathVariable("blogId") Long blogId) throws BaseException {
+    public ResponseEntity<GetBlogPostsRes> getHomePosts(@RequestParam("page") int page, @PathVariable("blogId") Long blogId, @RequestParam("hashtag") String hashtag) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new ResponseEntity<>(postService.getBlogPosts(page, blogId),
+        return new ResponseEntity<>(postService.getBlogPosts(page, blogId, hashtag),
                 HttpStatus.OK);
     }
 

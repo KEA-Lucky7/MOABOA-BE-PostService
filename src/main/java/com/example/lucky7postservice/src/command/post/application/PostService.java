@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -58,7 +59,7 @@ public class PostService {
         return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
     }
 
-    public GetBlogPostsRes getBlogPosts(int page, Long blogId) throws BaseException {
+    public GetBlogPostsRes getBlogPosts(int page, Long blogId, String hashtag) throws BaseException {
         // TODO : memberId 받아와서 적용
         Long memberId = 1L;
         memberQueryRepository.findById(memberId)
@@ -73,7 +74,12 @@ public class PostService {
         memberQueryRepository.findById(blogMemberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG_USER));
 
-        List<GetPosts> posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
+        List<GetPosts> posts;
+        if(hashtag.equals("ALL")) {
+            posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
+        } else {
+            posts = postQueryRepository.findAllBlogPostsWithHashtag(blogId, PageRequest.of(page, 15), hashtag);
+        }
 
         return new GetBlogPostsRes(blog.getId(), blogMemberId,
                 posts.size(), posts);

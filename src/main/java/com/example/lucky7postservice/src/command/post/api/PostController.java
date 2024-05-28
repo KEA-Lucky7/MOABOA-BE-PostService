@@ -39,6 +39,24 @@ public class PostController {
                 HttpStatus.OK);
     }
 
+    /* 블로그 글 목록 조회 (필터링) API */
+    @Operation(summary = "블로그 글 목록 조회 (태그 필터링) API", description="블로그의 글 목록을 반환합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다.")
+    })
+    @GetMapping("/post-list/{blogId}")
+    public ResponseEntity<GetBlogPostsRes> getHomePosts(@RequestParam("page") int page, @PathVariable("blogId") Long blogId) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
+        return new ResponseEntity<>(postService.getBlogPosts(page, blogId),
+                HttpStatus.OK);
+    }
+
+
     /* 글 작성하기 API */
     @Operation(summary = "글 작성 API", description="글을 작성합니다, 임시 저장 없이 글을 바로 작성하는 경우에는 0을 보내주세요")
     @Parameters({

@@ -33,10 +33,7 @@ public class QueryDataSource {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(secondDataSource());
         em.setPackagesToScan(
-                "com.example.lucky7postservice.src.query.member",
-                "com.example.lucky7postservice.src.command.comment.domain",
-                "com.example.lucky7postservice.src.command.like.domain",
-                "com.example.lucky7postservice.src.command.post.domain"
+                "com.example.lucky7postservice.src.query.entity"
         );
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();

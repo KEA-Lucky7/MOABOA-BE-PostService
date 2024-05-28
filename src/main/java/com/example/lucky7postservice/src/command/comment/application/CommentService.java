@@ -11,7 +11,6 @@ import com.example.lucky7postservice.src.command.comment.api.dto.PostReplyRes;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
-import com.example.lucky7postservice.src.query.member.Member;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;

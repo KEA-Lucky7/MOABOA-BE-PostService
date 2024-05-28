@@ -15,10 +15,18 @@ spring:
       jdbc-url: jdbc:mysql://${COMMAND-DB-ADDRESS}:3306/post
       username: ${COMMAND-DB-HOST}
       password: ${COMMAND-DB-PASSWORD}
+#    query:
+#      jdbc-url: ${LOCAL-QUERY-DB-ADDRESS}
+#      username: ${LOCAL-QUERY-DB-HOST}
+#      password: ${LOCAL-QUERY-DB-PASSWORD}
+#    command:
+#      jdbc-url: ${LOCAL-COMMAND-DB-ADDRESS}
+#      username: ${LOCAL-COMMAND-DB-HOST}
+#      password: ${LOCAL-COMMAND-DB-PASSWORD}
 
   # JPA
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
+    database-platform: com.mysql.cj.jdbc.Driver
     hibernate:
       ddl-auto: none        # none, create, create-drop, update, validate
     properties:
@@ -26,6 +34,18 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         show_sql: false
+
+#  jpa:
+#    database-platform: org.mariadb.jdbc.Driver
+#    hibernate:
+#      ddl-auto: create        # none, create, create-drop, update, validate
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MariaDBDialect
+#        format_sql: true
+#        show_sql: false
 
 management:
   endpoints:

@@ -21,6 +21,8 @@ public enum BaseResponseStatus {
     /** 유저 관련 Response **/
     INVALID_USER("GLB-ERR-006", HttpStatus.UNAUTHORIZED, "존재하지 않는 유저입니다."),
     INVALID_BLOG("GLB-ERR-007", HttpStatus.UNAUTHORIZED, "존재하지 않는 블로그입니다."),
+    INVALID_BLOG_USER("GLB-ERR-012", HttpStatus.UNAUTHORIZED, "블로그 주인이 존재하지 않습니다."),
+
 
     /** 글 관련 Response **/
     INVALID_POST("GLB-ERR-008", HttpStatus.NOT_FOUND, "존재하지 않는 글입니다."),

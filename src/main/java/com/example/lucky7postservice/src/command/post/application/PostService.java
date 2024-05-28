@@ -10,14 +10,15 @@ import com.example.lucky7postservice.src.command.post.domain.repository.WalletRe
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
-import com.example.lucky7postservice.src.query.member.Blog;
-import com.example.lucky7postservice.src.query.member.Member;
+import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
 import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
+import com.example.lucky7postservice.src.query.repository.PostQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
 import com.example.lucky7postservice.utils.entity.State;
+import com.example.lucky7postservice.utils.kafka.PostProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,33 +41,42 @@ public class PostService {
 
     private final MemberQueryRepository memberQueryRepository;
     private final BlogQueryRepository blogQueryRepository;
+    private final PostQueryRepository postQueryRepository;
+
+    private final PostProducer postProducer;
 
     public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
-        // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
+        // TODO : memberId 받아와서 적용
         Long memberId = 1L;
-        Member member = memberQueryRepository.findById(memberId)
+        memberQueryRepository.findById(memberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // TODO : 블로그 존재 여부 확인
-        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
-        String nickname = member.getNickname();
+        return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
+    }
 
-        List<Post> postList = postRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
+    public GetBlogPostsRes getBlogPosts(int page, Long blogId) throws BaseException {
+        // TODO : memberId 받아와서 적용
+        Long memberId = 1L;
+        memberQueryRepository.findById(memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
-        return postList.stream()
-                .map(d -> GetHomePostsRes.builder()
-                        .postId(d.getId())
-                        .title(d.getTitle())
-                        .thumbnail(d.getThumbnail())
-                        .mainHashtag(d.getMainHashtag())
-                        .blogId(blog.getId())
-                        .memberId(memberId)
-                        .nickname(nickname)
-                        .createdAt(SetTime.timestampToString(d.getCreatedAt()))
-                        .build())
-                .collect(Collectors.toList());
+        // 블로그 존재 여부 확인
+        QueryBlog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        // 블로그 주인 존재 여부 확인
+        Long blogMemberId = blog.getMember().getId();
+        memberQueryRepository.findById(blogMemberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG_USER));
+
+        List<GetPosts> posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
+
+        return new GetBlogPostsRes(blog.getId(), blogMemberId,
+                posts.size(), posts);
     }
 
     @Transactional
@@ -78,14 +87,14 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 블로그 존재 여부 확인
-        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+        QueryBlog queryBlog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         Post post;
         PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
         if(postId == 0) {
-            post = postRepository.save(Post.of(memberId, blog.getId(),
+            post = postRepository.save(Post.of(memberId, queryBlog.getId(),
                     postType, postReq.getTitle(), postReq.getContent(), postReq.getThumbnail(), postReq.getMainHashtag(),
                     PostState.ACTIVE));
         } else {
@@ -110,6 +119,8 @@ public class PostService {
                     SetTime.stringToLocalDate(wallet.getConsumedDate()), wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
         }
 
+//        postProducer.send("post", post);
+
         return new PostPostRes(post.getId());
     }
 
@@ -121,14 +132,14 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         // 블로그 존재 여부 확인
-        Blog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+        QueryBlog queryBlog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         Post post;
         PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
 
         if(postId == 0) {
-            post = postRepository.save(Post.saveTemporaryPost(memberId, blog.getId(),
+            post = postRepository.save(Post.saveTemporaryPost(memberId, queryBlog.getId(),
                     postReq.getTitle(), postReq.getContent(), postReq.getMainHashtag(), postType));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
@@ -159,15 +170,7 @@ public class PostService {
         blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
-        List<Post> postList = postRepository.findAllByMemberIdAndPostState(memberId, PostState.TEMPORARY);
-
-        return postList.stream()
-                .map(d -> GetSavedPostsRes.builder()
-                        .postId(d.getId())
-                        .title(d.getTitle())
-                        .updatedAt(SetTime.timestampToString(d.getUpdatedAt()))
-                        .build())
-                .collect(Collectors.toList());
+        return postQueryRepository.findAllTemporaryPosts(memberId);
     }
 
     @Transactional

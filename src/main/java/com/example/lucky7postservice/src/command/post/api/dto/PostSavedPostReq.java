@@ -16,6 +16,9 @@ public class PostSavedPostReq {
     @NotBlank(message="게시물 내용을 입력해야 합니다.")
     @Schema(description = "게시물 내용", example = "")
     private String content;
+    @NotBlank(message="미리보기 내용을 입력해야 합니다.")
+    @Schema(description = "게시물 미리보기", example = "미리보기")
+    private String preview;
     @NotBlank(message="자유글/가계부 여부를 입력해야 합니다.")
     @Pattern(regexp = "^(FREE|WALLET)$", message = "FREE 혹은 WALLET으로 입력해야 합니다")
     @Schema(description = "자유글/가계부 여부", example = "FREE/WALLET")

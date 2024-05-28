@@ -55,13 +55,14 @@ public class Post extends BaseEntity {
     }
 
     public static Post saveTemporaryPost(Long memberId, Long blogId,
-                                String title, String content, String mainHashtag,
-                                         PostType postType) {
+                                         String title, String content, String preview,
+                                         String mainHashtag, PostType postType) {
         return Post.builder()
                 .memberId(memberId)
                 .blogId(blogId)
                 .title(title)
                 .content(content)
+                .preview(preview)
                 .mainHashtag(mainHashtag)
                 .postType(postType)
                 .postState(PostState.TEMPORARY)

@@ -142,7 +142,8 @@ public class PostService {
 
         if(postId == 0) {
             post = postRepository.save(Post.saveTemporaryPost(memberId, queryBlog.getId(),
-                    postReq.getTitle(), postReq.getContent(), postReq.getMainHashtag(), postType));
+                    postReq.getTitle(), postReq.getContent(), postReq.getPreview(),
+                    postReq.getMainHashtag(), postType));
         } else {
             // 이미 임시 저장한 글이 있다면, 불러와서 새로 저장함
             post = postRepository.findByIdAndPostState(postId, PostState.TEMPORARY)

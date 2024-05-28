@@ -40,7 +40,7 @@ public class PostController {
     }
 
     /* 블로그 글 목록 조회 (필터링) API */
-    @Operation(summary = "블로그 글 목록 조회 (태그 필터링) API", description="블로그의 글 목록을 반환합니다")
+    @Operation(summary = "블로그 해시태그 목록 조회 API", description="블로그의 해시태그 목록을 반환합니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
@@ -48,7 +48,7 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
             @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다.")
     })
-    @GetMapping("/hashtag-list/{blogId}")
+    @GetMapping("/{blogId}/hashtag-list")
     public ResponseEntity<GetHashtagsRes> getHashtags(@PathVariable("blogId") Long blogId) throws BaseException {
         return new ResponseEntity<>(postService.getHashtags(blogId), HttpStatus.OK);
     }

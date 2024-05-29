@@ -51,10 +51,10 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             left join comment as c on c.post.id=p.id and c.state='ACTIVE'\s
             left join reply as r on r.comment.id=c.id and r.state='ACTIVE'\s
             left join post_like as l on l.post.id=p.id\s
-            where p.blog.id=:blogId and p.postState='ACTIVE' and p.mainHashtag=:hashtag\s
+            where p.blog.id=:blogId and p.postState='ACTIVE' and p.postType=:postType and p.mainHashtag=:hashtag\s
             group by p.id\s
             order by p.createdAt desc""")
-    List<GetPosts> findAllBlogPostsWithHashtag(Long blogId, Pageable pageable, String hashtag);
+    List<GetPosts> findAllBlogPostsWithHashtag(@Param("blogId") Long blogId, Pageable pageable, @Param("postType") PostType postType, @Param("hashtag") String hashtag);
 
     @Query(value = """
             select p.id as postId, p.member.id as memberId,\s

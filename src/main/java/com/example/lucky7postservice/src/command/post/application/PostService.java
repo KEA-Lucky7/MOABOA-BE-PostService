@@ -68,14 +68,9 @@ public class PostService {
         return new GetHashtagsRes(freeList, walletList);
     }
 
-    public GetBlogPostsRes getBlogPosts(int page, Long blogId, String hashtag) throws BaseException {
-        // TODO : memberId 받아와서 적용
-        Long memberId = 1L;
-        memberQueryRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-
+    public GetBlogPostsRes getBlogPosts(int page, Long blogId, String postType, String hashtag) throws BaseException {
         // 블로그 존재 여부 확인
-        QueryBlog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+        QueryBlog blog = blogQueryRepository.findByIdAndState(blogId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // 블로그 주인 존재 여부 확인
@@ -83,11 +78,13 @@ public class PostService {
         memberQueryRepository.findById(blogMemberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG_USER));
 
+        PostType type = postType.equals("자유글") ? PostType.FREE : PostType.WALLET;
+
         List<GetPosts> posts;
-        if(hashtag.equals("ALL")) {
+        if(postType.equals("ALL") && hashtag.equals("ALL")) {
             posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
         } else {
-            posts = postQueryRepository.findAllBlogPostsWithHashtag(blogId, PageRequest.of(page, 15), hashtag);
+            posts = postQueryRepository.findAllBlogPostsWithHashtag(blogId, PageRequest.of(page, 15), type, hashtag);
         }
 
         return new GetBlogPostsRes(blog.getId(), blogMemberId,

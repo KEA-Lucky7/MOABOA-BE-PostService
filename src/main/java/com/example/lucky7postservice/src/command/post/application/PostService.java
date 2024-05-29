@@ -11,9 +11,8 @@ import com.example.lucky7postservice.src.command.comment.domain.repository.Reply
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
-import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
-import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
-import com.example.lucky7postservice.src.query.repository.PostQueryRepository;
+import com.example.lucky7postservice.src.query.entity.post.QueryPost;
+import com.example.lucky7postservice.src.query.repository.*;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
@@ -42,8 +41,8 @@ public class PostService {
     private final MemberQueryRepository memberQueryRepository;
     private final BlogQueryRepository blogQueryRepository;
     private final PostQueryRepository postQueryRepository;
-
-    private final PostProducer postProducer;
+    private final HashtagQueryRepository hashtagQueryRepository;
+    private final WalletQueryRepository walletQueryRepository;
 
     public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
         // TODO : memberId 받아와서 적용
@@ -195,6 +194,37 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         return postQueryRepository.findAllTemporaryPosts(memberId);
+    }
+
+    public GetSavedPostRes getSavedPost(Long postId) throws BaseException {
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        // 게시물 존재 여부 확인
+        QueryPost post = postQueryRepository.findByIdAndPostState(postId, PostState.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        List<String> hashtagList = hashtagQueryRepository.findAllByPostId(postId);
+        List<WalletsRes> walletList = walletQueryRepository.findAllByPostIdAndState(postId);
+
+        return GetSavedPostRes.builder()
+                .postId(postId)
+                .memberId(memberId)
+                .title(post.getTitle())
+                .content(post.getContent())
+                .preview(post.getPreview())
+                .thumbnail(post.getThumbnail())
+                .postType(post.getPostType() == PostType.FREE ? "자유글" : "소비 일기")
+                .mainHashtag(post.getMainHashtag())
+                .hashtagList(hashtagList)
+                .walletList(walletList)
+                .build();
     }
 
     @Transactional

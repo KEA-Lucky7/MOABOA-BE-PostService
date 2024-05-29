@@ -2,6 +2,7 @@ package com.example.lucky7postservice.src.query.repository;
 
 import com.example.lucky7postservice.src.command.like.api.dto.GetLikePostsRes;
 import com.example.lucky7postservice.src.command.post.api.dto.*;
+import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.post.domain.PostType;
 import com.example.lucky7postservice.src.query.entity.post.QueryPost;
 import org.springframework.data.domain.Pageable;
@@ -9,10 +10,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
+    Optional<QueryPost> findByIdAndPostState(Long postId, PostState state);
+
     @Query(value = """
             select p.id as postId,\s
             p.title as title, p.preview,\s

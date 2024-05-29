@@ -11,9 +11,8 @@ import com.example.lucky7postservice.src.command.comment.domain.repository.Reply
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
-import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
-import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
-import com.example.lucky7postservice.src.query.repository.PostQueryRepository;
+import com.example.lucky7postservice.src.query.entity.post.QueryPost;
+import com.example.lucky7postservice.src.query.repository.*;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
@@ -25,7 +24,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -42,19 +43,13 @@ public class PostService {
     private final MemberQueryRepository memberQueryRepository;
     private final BlogQueryRepository blogQueryRepository;
     private final PostQueryRepository postQueryRepository;
+    private final HashtagQueryRepository hashtagQueryRepository;
+    private final WalletQueryRepository walletQueryRepository;
+    private final CommentQueryRepository commentQueryRepository;
+    private final ReplyQueryRepository replyQueryRepository;
 
-    private final PostProducer postProducer;
-
-    public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
-        // TODO : memberId 받아와서 적용
-        Long memberId = 1L;
-        memberQueryRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
-
+    /* 홈 화면 글 목록 반환 (좋아요순) */
+    public List<GetHomePostsRes> getHomePosts(int page, int pageSize) {
         return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
     }
 
@@ -73,14 +68,9 @@ public class PostService {
         return new GetHashtagsRes(freeList, walletList);
     }
 
-    public GetBlogPostsRes getBlogPosts(int page, Long blogId, String hashtag) throws BaseException {
-        // TODO : memberId 받아와서 적용
-        Long memberId = 1L;
-        memberQueryRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-
+    public GetBlogPostsRes getBlogPosts(int page, Long blogId, String postType, String hashtag) throws BaseException {
         // 블로그 존재 여부 확인
-        QueryBlog blog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+        QueryBlog blog = blogQueryRepository.findByIdAndState(blogId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         // 블로그 주인 존재 여부 확인
@@ -88,11 +78,13 @@ public class PostService {
         memberQueryRepository.findById(blogMemberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG_USER));
 
+        PostType type = postType.equals("자유글") ? PostType.FREE : PostType.WALLET;
+
         List<GetPosts> posts;
-        if(hashtag.equals("ALL")) {
+        if(postType.equals("ALL") && hashtag.equals("ALL")) {
             posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
         } else {
-            posts = postQueryRepository.findAllBlogPostsWithHashtag(blogId, PageRequest.of(page, 15), hashtag);
+            posts = postQueryRepository.findAllBlogPostsWithHashtag(blogId, PageRequest.of(page, 15), type, hashtag);
         }
 
         return new GetBlogPostsRes(blog.getId(), blogMemberId,
@@ -195,6 +187,95 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
         return postQueryRepository.findAllTemporaryPosts(memberId);
+    }
+
+    public GetSavedPostRes getSavedPost(Long postId) throws BaseException {
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        // 게시물 존재 여부 확인
+        QueryPost post = postQueryRepository.findByIdAndPostState(postId, PostState.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+
+        List<String> hashtagList = hashtagQueryRepository.findAllByPostId(postId);
+        List<WalletsRes> walletList = walletQueryRepository.findAllByPostIdAndState(postId);
+
+        return GetSavedPostRes.builder()
+                .postId(postId)
+                .memberId(memberId)
+                .title(post.getTitle())
+                .content(post.getContent())
+                .preview(post.getPreview())
+                .thumbnail(post.getThumbnail())
+                .postType(post.getPostType() == PostType.FREE ? "자유글" : "소비 일기")
+                .mainHashtag(post.getMainHashtag())
+                .hashtagList(hashtagList)
+                .walletList(walletList)
+                .build();
+    }
+
+    /* 게시물 상세 조회 */
+    public GetPostRes getPost(Long postId) throws BaseException {
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 게시물 존재 여부 확인
+        PostRes postRes = postQueryRepository.findByPostIdAndState(postId, memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+        Long postMemberId = postRes.getMemberId();
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(postMemberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        List<String> hashtagList = hashtagQueryRepository.findAllByPostId(postId);
+        List<WalletsRes> walletList = walletQueryRepository.findAllByPostIdAndState(postId);
+
+        List<CommentRes> commentRes = commentQueryRepository.findAllByPostIdAndState(postId);
+        List<GetCommentsRes> commentList = commentRes.stream()
+                .map(d -> GetCommentsRes.builder()
+                        .commentId(d.getCommentId())
+                        .memberId(d.getMemberId())
+                        .nickname(d.getNickname())
+                        .profileImg(d.getProfileImg())
+                        .content(d.getContent())
+                        .createdAt(d.getCreatedAt())
+                        .replyList(replyQueryRepository.findAllByCommentIdAndState(d.getCommentId()))
+                        .build())
+                .toList();
+
+        List<PrevPostsRes> prevPostList = postQueryRepository.findAllPrevPostByPostIdAndPostState(postId, postMemberId);
+        prevPostList.addAll(postQueryRepository.findAllNextPostByPostIdAndPostState(postId, postMemberId));
+
+        return GetPostRes.builder()
+                .postId(postRes.getPostId())
+                .memberId(postRes.getMemberId())
+                .nickname(postRes.getNickname())
+                .profileImg(postRes.getProfileImg())
+                .about(postRes.getAbout())
+                .title(postRes.getTitle())
+                .content(postRes.getContent())
+                .preview(postRes.getPreview())
+                .thumbnail(postRes.getThumbnail())
+                .postType(postRes.getPostType())
+                .mainHashtag(postRes.getMainHashtag())
+                .createdAt(postRes.getCreatedAt())
+                .commentCnt(postRes.getCommentCnt())
+                .likeCnt(postRes.getLikeCnt())
+                .isLiked(postRes.getIsLiked())
+                .hashtagList(hashtagList)
+                .walletList(walletList)
+                .commentList(commentList)
+                .postList(prevPostList)
+                .build();
     }
 
     @Transactional

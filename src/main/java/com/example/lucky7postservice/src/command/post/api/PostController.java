@@ -131,7 +131,7 @@ public class PostController {
                 HttpStatus.OK);
     }
 
-    /* 글 임시 저장 목록 조회 API */
+    /* 임시 저장한 글 상세 조회 API */
     @Operation(summary = "임시 저장한 글 상세 조회 API", description="임시 저장한 글 상세 정보를 반환합니다")
     @Parameters({
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
@@ -150,6 +150,26 @@ public class PostController {
 
         return new ResponseEntity<>(postService.getSavedPost(postId),
                 HttpStatus.OK);
+    }
+
+    /* 글 상세 조회 API */
+    @Operation(summary = "글 상세 조회 API", description="글 상세 정보를 반환합니다")
+    @Parameters({
+            @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "GLB-SUC-000", description = "요청이 성공적으로 처리되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
+            @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
+    })
+    @GetMapping("/{postId}")
+    public ResponseEntity<GetPostRes> getPost(@PathVariable("postId") Long postId) throws BaseException {
+        // TODO : Authorization에서 jwt 추출하기
+
+        return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
     }
 
     /* 글 삭제하기 API */

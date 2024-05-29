@@ -24,7 +24,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,6 +45,8 @@ public class PostService {
     private final PostQueryRepository postQueryRepository;
     private final HashtagQueryRepository hashtagQueryRepository;
     private final WalletQueryRepository walletQueryRepository;
+    private final CommentQueryRepository commentQueryRepository;
+    private final ReplyQueryRepository replyQueryRepository;
 
     public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
         // TODO : memberId 받아와서 적용
@@ -224,6 +228,64 @@ public class PostService {
                 .mainHashtag(post.getMainHashtag())
                 .hashtagList(hashtagList)
                 .walletList(walletList)
+                .build();
+    }
+
+    /* 게시물 상세 조회 */
+    public GetPostRes getPost(Long postId) throws BaseException {
+        // TODO : 멤버 아이디 추출 후 예외 처리 적용
+        Long memberId = 1L;
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 게시물 존재 여부 확인
+        PostRes postRes = postQueryRepository.findByPostIdAndState(postId, memberId)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
+        Long postMemberId = postRes.getMemberId();
+
+        // 블로그 존재 여부 확인
+        blogQueryRepository.findByMemberIdAndState(postMemberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        List<String> hashtagList = hashtagQueryRepository.findAllByPostId(postId);
+        List<WalletsRes> walletList = walletQueryRepository.findAllByPostIdAndState(postId);
+
+        List<CommentRes> commentRes = commentQueryRepository.findAllByPostIdAndState(postId);
+        List<GetCommentsRes> commentList = commentRes.stream()
+                .map(d -> GetCommentsRes.builder()
+                        .commentId(d.getCommentId())
+                        .memberId(d.getMemberId())
+                        .nickname(d.getNickname())
+                        .profileImg(d.getProfileImg())
+                        .content(d.getContent())
+                        .createdAt(d.getCreatedAt())
+                        .replyList(replyQueryRepository.findAllByCommentIdAndState(d.getCommentId()))
+                        .build())
+                .toList();
+
+        List<PrevPostsRes> prevPostList = postQueryRepository.findAllPrevPostByPostIdAndPostState(postId, postMemberId);
+        prevPostList.addAll(postQueryRepository.findAllNextPostByPostIdAndPostState(postId, postMemberId));
+
+        return GetPostRes.builder()
+                .postId(postRes.getPostId())
+                .memberId(postRes.getMemberId())
+                .nickname(postRes.getNickname())
+                .profileImg(postRes.getProfileImg())
+                .about(postRes.getAbout())
+                .title(postRes.getTitle())
+                .content(postRes.getContent())
+                .preview(postRes.getPreview())
+                .thumbnail(postRes.getThumbnail())
+                .postType(postRes.getPostType())
+                .mainHashtag(postRes.getMainHashtag())
+                .createdAt(postRes.getCreatedAt())
+                .commentCnt(postRes.getCommentCnt())
+                .likeCnt(postRes.getLikeCnt())
+                .isLiked(postRes.getIsLiked())
+                .hashtagList(hashtagList)
+                .walletList(walletList)
+                .commentList(commentList)
+                .postList(prevPostList)
                 .build();
     }
 

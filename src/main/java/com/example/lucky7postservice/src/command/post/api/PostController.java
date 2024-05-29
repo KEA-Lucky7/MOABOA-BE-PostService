@@ -32,11 +32,8 @@ public class PostController {
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다.")
     })
     @GetMapping("/home-list")
-    public ResponseEntity<List<GetHomePostsRes>> getHomePosts(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.getHomePosts(page, pageSize),
-                HttpStatus.OK);
+    public ResponseEntity<List<GetHomePostsRes>> getHomePosts(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+        return new ResponseEntity<>(postService.getHomePosts(page, pageSize), HttpStatus.OK);
     }
 
     /* 블로그 글 목록 조회 (필터링) API */

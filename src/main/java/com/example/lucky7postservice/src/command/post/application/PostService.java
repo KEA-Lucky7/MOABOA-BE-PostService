@@ -48,16 +48,8 @@ public class PostService {
     private final CommentQueryRepository commentQueryRepository;
     private final ReplyQueryRepository replyQueryRepository;
 
-    public List<GetHomePostsRes> getHomePosts(int page, int pageSize) throws BaseException {
-        // TODO : memberId 받아와서 적용
-        Long memberId = 1L;
-        memberQueryRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
-
+    /* 홈 화면 글 목록 반환 (좋아요순) */
+    public List<GetHomePostsRes> getHomePosts(int page, int pageSize) {
         return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
     }
 

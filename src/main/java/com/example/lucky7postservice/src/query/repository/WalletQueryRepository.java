@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface WalletQueryRepository extends JpaRepository<QueryWallet, Long> {
     @Query(value = """
-            select DATE_FORMAT(w.consumedDate, '%d.%m.%y') as consumedDate,
+            select DATE_FORMAT(w.consumedDate, '%y.%m.%d') as consumedDate,
             w.memo as memo, w.amount as amount, w.walletType as walletType
             from wallet as w
             where w.post.id=:postId and w.state='ACTIVE'""")

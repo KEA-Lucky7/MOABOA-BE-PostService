@@ -3,7 +3,7 @@ package com.example.lucky7postservice.src.command.post.api.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public interface WalletsRes {
-    @Schema(description = "소비 내역 날짜", example = "2024-05-24")
+    @Schema(description = "소비 내역 날짜", example = "2024.05.24")
     String getConsumedDate();
     @Schema(description = "소비 내역 메모", example = "드럼 결제")
     String getMemo();

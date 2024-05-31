@@ -25,7 +25,7 @@ public interface PostRes {
     String getPostType();
     @Schema(description = "대표 해시태그", example = "야구")
     String getMainHashtag();
-    @Schema(description = "게시물 작성일", example = "2024.04.14")
+    @Schema(description = "게시물 작성일", example = "24.04.14")
     String getCreatedAt();
     @Schema(description = "게시물 댓글 개수", example = "2")
     int getCommentCnt();

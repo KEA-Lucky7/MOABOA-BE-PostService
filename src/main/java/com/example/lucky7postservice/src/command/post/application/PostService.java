@@ -3,13 +3,13 @@ package com.example.lucky7postservice.src.command.post.application;
 import com.example.lucky7postservice.src.command.comment.domain.Comment;
 import com.example.lucky7postservice.src.command.comment.domain.Reply;
 import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
+import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
+import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.api.dto.*;
 import com.example.lucky7postservice.src.command.post.domain.*;
 import com.example.lucky7postservice.src.command.post.domain.repository.HashtagRepository;
-import com.example.lucky7postservice.src.command.post.domain.repository.WalletRepository;
-import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
-import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
+import com.example.lucky7postservice.src.command.post.domain.repository.WalletRepository;
 import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
 import com.example.lucky7postservice.src.query.entity.post.QueryPost;
 import com.example.lucky7postservice.src.query.repository.*;
@@ -17,16 +17,13 @@ import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
 import com.example.lucky7postservice.utils.entity.State;
-import com.example.lucky7postservice.utils.kafka.PostProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

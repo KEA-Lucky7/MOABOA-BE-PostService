@@ -24,7 +24,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             p.title as title, p.preview as preview,\s
             p.thumbnail as thumbnail, p.mainHashtag as mainHashtag,\s
             p.blog.id as blogId, p.member.id as memberId, p.member.nickname as nickname,\s
-            DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt from post as p\s
+            DATE_FORMAT(p.createdAt, '%y.%m.%d') as createdAt from post as p\s
             where p.postState='ACTIVE'\s
             order by (select count(l) from post_like as l where l.post.id = p.id) desc, p.id asc\s""")
     List<GetHomePostsRes> findAllOrderByLikeCnt(Pageable pageable);
@@ -44,7 +44,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             end as postType,\s
             p.mainHashtag as mainHashtag,\s
             p.title as title, p.preview as preview, p.thumbnail as thumbnail,\s
-            DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt,\s
+            DATE_FORMAT(p.createdAt, '%y.%m.%d') as createdAt,\s
             count(distinct c.id) + count(distinct r.id) as commentCnt,\s
             count(l.id) as likeCnt\s
             from post as p\s
@@ -64,7 +64,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             end as postType,\s
             p.mainHashtag as mainHashtag,\s
             p.title as title, p.preview as preview, p.thumbnail as thumbnail,\s
-            DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt,\s
+            DATE_FORMAT(p.createdAt, '%y.%m.%d') as createdAt,\s
             count(distinct c.id) + count(distinct r.id) as commentCnt,\s
             count(l.id) as likeCnt\s
             from post as p\s
@@ -88,7 +88,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             p.blog.id as blogId, p.member.id as memberId, p.member.nickname as nickname,\s
             count(distinct c.id) + count(distinct r.id) as commentCnt,\s
             count(distinct l.id) as likeCnt,\s
-            DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt\s
+            DATE_FORMAT(p.createdAt, '%y.%m.%d') as createdAt\s
             from post as p\s
             left join post_like as l on l.post.id=p.id\s
             left join comment as c on c.post.id=p.id and c.state='ACTIVE'\s
@@ -107,7 +107,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
           when p.postType = 'FREE' then '자유글'
           else '소비 일기'
         end as postType,
-        p.mainHashtag as mainHashtag, DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt,
+        p.mainHashtag as mainHashtag, DATE_FORMAT(p.createdAt, '%y.%m.%d') as createdAt,
         count(distinct c.id) + count(distinct r.id) as commentCnt,
         count(distinct l.id) as likeCnt,
         exists (
@@ -125,7 +125,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
 
     @Query(value = """
             select p.id as postId, p.member.id as memberId,
-            p.title as title, DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt,
+            p.title as title, DATE_FORMAT(p.createdAt, '%y.%m.%d') as createdAt,
             count(distinct c.id) + count(distinct r.id) as commentCnt
             from post as p
             left join comment as c on c.post.id=p.id and c.state='ACTIVE'
@@ -138,7 +138,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
 
     @Query(value = """
             select p.id as postId, p.member.id as memberId,
-            p.title as title, DATE_FORMAT(p.createdAt, '%d.%m.%y') as createdAt,
+            p.title as title, DATE_FORMAT(p.createdAt, '%y.%m.%d') as createdAt,
             count(distinct c.id) + count(distinct r.id) as commentCnt
             from post as p
             left join comment as c on c.post.id=p.id and c.state='ACTIVE'

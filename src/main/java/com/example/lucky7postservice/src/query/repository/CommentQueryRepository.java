@@ -17,7 +17,7 @@ public interface CommentQueryRepository extends JpaRepository<QueryComment, Long
             select c.id as commentId,
             c.member.id as memberId, c.member.nickname as nickname, c.member.profileImage as profileImg,
             c.content as content,\s
-            DATE_FORMAT(c.createdAt, '%d.%m.%y %H:%i') as createdAt 
+            DATE_FORMAT(c.createdAt, '%y.%m.%d %H:%i') as createdAt 
             from comment as c\s
             where c.post.id=:postId and c.state='ACTIVE'""")
     List<CommentRes> findAllByPostIdAndState(Long postId);

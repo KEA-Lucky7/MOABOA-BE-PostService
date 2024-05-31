@@ -38,7 +38,8 @@ public class CommandDataSource {
         em.setPackagesToScan(
                 "com.example.lucky7postservice.src.command.comment.domain",
                 "com.example.lucky7postservice.src.command.like.domain",
-                "com.example.lucky7postservice.src.command.post.domain"
+                "com.example.lucky7postservice.src.command.post.domain",
+                "com.example.lucky7postservice.src.command.wallet.domain"
         );
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();

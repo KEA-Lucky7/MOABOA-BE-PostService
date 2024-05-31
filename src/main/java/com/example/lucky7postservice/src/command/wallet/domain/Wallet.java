@@ -1,5 +1,6 @@
-package com.example.lucky7postservice.src.command.post.domain;
+package com.example.lucky7postservice.src.command.wallet.domain;
 
+import com.example.lucky7postservice.src.command.post.domain.Post;
 import com.example.lucky7postservice.utils.entity.BaseEntity;
 import com.example.lucky7postservice.utils.entity.State;
 import jakarta.persistence.*;
@@ -8,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 

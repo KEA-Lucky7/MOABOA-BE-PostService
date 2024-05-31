@@ -17,6 +17,18 @@ public class SetTime {
     }
 
     public static LocalDate stringToLocalDate(String date) {
+        date = date.replace('.', '-');
         return LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
+    }
+
+    public static LocalDate getMonthStart(String month) {
+        String startDate = month + ".01";
+        startDate = startDate.replace('.', '-');
+        return LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
+    }
+
+    public static LocalDate getMonthEnd(String month) {
+        LocalDate startDate = getMonthStart(month);
+        return startDate.plusMonths(1);
     }
 }

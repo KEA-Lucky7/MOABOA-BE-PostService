@@ -33,7 +33,7 @@ public class GetPostRes {
     private String postType;
     @Schema(description = "대표 해시태그", example = "야구")
     private String mainHashtag;
-    @Schema(description = "게시물 작성일", example = "2024.04.14")
+    @Schema(description = "게시물 작성일", example = "24.04.14")
     private String createdAt;
     @Schema(description = "게시물 댓글 개수", example = "2")
     private int commentCnt;

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface WalletQueryRepository extends JpaRepository<QueryWallet, Long> {
@@ -36,7 +37,7 @@ public interface WalletQueryRepository extends JpaRepository<QueryWallet, Long> 
             from wallet as w
             where w.member.id=:memberId and w.state='ACTIVE'
             and (w.consumedDate>=:startDate and w.consumedDate<:endDate)""")
-    Integer findByMemberIdAndStateAndConsumedDate(@Param("memberId") Long memberId,
-                                                  @Param("startDate") LocalDate startDate,
-                                                  @Param("endDate") LocalDate endDate);
+    Optional<Integer> findByMemberIdAndStateAndConsumedDate(@Param("memberId") Long memberId,
+                                                            @Param("startDate") LocalDate startDate,
+                                                            @Param("endDate") LocalDate endDate);
 }

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -48,12 +49,15 @@ public class WalletService {
         LocalDate today = LocalDate.now();
 
         LocalDate specific = SetTime.stringToLocalDate(specificDate);
-        int specificAmount = walletQueryRepository.findByMemberIdAndStateAndConsumedDate(memberId, specific, today);
+        Integer specificAmount = walletQueryRepository.findByMemberIdAndStateAndConsumedDate(memberId, specific, today)
+                .orElse(0);
 
         LocalDate monthAgo = today.minusMonths(1);
-        int monthAmount = walletQueryRepository.findByMemberIdAndStateAndConsumedDate(memberId, monthAgo, today);
+        Integer monthAmount = walletQueryRepository.findByMemberIdAndStateAndConsumedDate(memberId, monthAgo, today)
+                .orElse(0);
 
-        int totalAmount = walletQueryRepository.findByMemberIdAndStateAndConsumedDate(memberId, start, end);
+        Integer totalAmount = walletQueryRepository.findByMemberIdAndStateAndConsumedDate(memberId, start, end)
+                .orElse(0);
 
         List<ConsumedRes> consumedList = walletQueryRepository.findAllByMemberIdAndStateAndConsumedDate(memberId, start, end);
         return new GetCalenderRes(memberId,

@@ -45,6 +45,7 @@ public class PostLikeController {
                 HttpStatus.OK);
     }
 
+    /* 글 공감 취소 API */
     @Operation(summary = "글 공감 취소 API", description="글 좋아요를 취소합니다")
     @Parameters({
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
@@ -66,6 +67,7 @@ public class PostLikeController {
                 HttpStatus.OK);
     }
 
+    /* 좋아요 누른 글 목록 반환 API */
     @Operation(summary = "좋아요 누른 글 목록 반환 API", description="글 좋아요를 취소합니다")
     @Parameters({
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))

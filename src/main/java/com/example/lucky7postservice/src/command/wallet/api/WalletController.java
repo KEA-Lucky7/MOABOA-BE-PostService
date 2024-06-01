@@ -1,6 +1,5 @@
 package com.example.lucky7postservice.src.command.wallet.api;
 
-import com.example.lucky7postservice.src.command.wallet.api.dto.ConsumedRes;
 import com.example.lucky7postservice.src.command.wallet.api.dto.GetCalenderRes;
 import com.example.lucky7postservice.src.command.wallet.application.WalletService;
 import com.example.lucky7postservice.utils.config.BaseException;
@@ -15,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

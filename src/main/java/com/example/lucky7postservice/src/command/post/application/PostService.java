@@ -51,6 +51,7 @@ public class PostService {
         return postQueryRepository.findAllOrderByLikeCnt(PageRequest.of(page, pageSize));
     }
 
+    /* 블로그 해시태그 목록 조회 */
     public GetHashtagsRes getHashtags(Long blogId) throws BaseException {
         // 블로그 존재 여부 확인
         QueryBlog blog = blogQueryRepository.findByIdAndState(blogId, State.ACTIVE)
@@ -66,6 +67,7 @@ public class PostService {
         return new GetHashtagsRes(freeList, walletList);
     }
 
+    /* 블로그 글 목록 조회 */
     public GetBlogPostsRes getBlogPosts(int page, Long blogId, String postType, String hashtag) throws BaseException {
         // 블로그 존재 여부 확인
         QueryBlog blog = blogQueryRepository.findByIdAndState(blogId, State.ACTIVE)
@@ -89,6 +91,7 @@ public class PostService {
                 posts.size(), posts);
     }
 
+    /* 글 저장 */
     @Transactional
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -136,6 +139,7 @@ public class PostService {
         return new PostPostRes(post.getId());
     }
 
+    /* 글 임시 저장 */
     @Transactional
     public PostPostRes savePost(Long postId, PostSavedPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -174,6 +178,7 @@ public class PostService {
         return new PostPostRes(post.getId());
     }
 
+    /* 임시 저장 목록 조회 */
     public List<GetSavedPostsRes> getSavedPosts() throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
@@ -187,6 +192,7 @@ public class PostService {
         return postQueryRepository.findAllTemporaryPosts(memberId);
     }
 
+    /* 임시 저장한 글 상세 조회 */
     public GetSavedPostRes getSavedPost(Long postId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
@@ -218,7 +224,7 @@ public class PostService {
                 .build();
     }
 
-    /* 게시물 상세 조회 */
+    /* 글 상세 조회 */
     public GetPostRes getPost(Long postId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
         Long memberId = 1L;
@@ -276,6 +282,7 @@ public class PostService {
                 .build();
     }
 
+    /* 글 삭제 */
     @Transactional
     public String deletePost(Long postId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -311,6 +318,7 @@ public class PostService {
         return "게시물을 삭제하였습니다.";
     }
 
+    /* 글 수정 */
     @Transactional
     public PostPostRes modifyPost(Long postId, PostPostReq postReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -343,6 +351,7 @@ public class PostService {
         return new PostPostRes(post.getId());
     }
 
+    /* 해시태그, 소비 내역 삭제 */
     private void deleteHashtag(Long postId) {
         hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));
     }
@@ -351,6 +360,7 @@ public class PostService {
         walletRepository.deleteAll(walletRepository.findAllByPostId(postId));
     }
 
+    /* 해시태그, 소비 내역 업데이트 */
     private void updateHashtag(List<String> hashtagList, Post post) {
         // 새로운 해시태그 저장
         for(String hashtag : hashtagList) {

@@ -46,6 +46,7 @@ public class CommentController {
                 , HttpStatus.OK);
     }
 
+    /* 댓글 수정 API */
     @Operation(summary = "댓글 수정 API", description="댓글을 수정합니다.")
     @Parameters({
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
@@ -67,6 +68,7 @@ public class CommentController {
                 , HttpStatus.OK);
     }
 
+    /* 댓글 삭제 API */
     @Operation(summary = "댓글 삭제 API", description="댓글을 삭제합니다.")
     @Parameters({
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
@@ -110,6 +112,7 @@ public class CommentController {
                 HttpStatus.OK);
     }
 
+    /* 답글 수정 API */
     @Operation(summary = "답글 수정 API", description="답글을 수정합니다.")
     @Parameters({
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))
@@ -128,10 +131,11 @@ public class CommentController {
     public ResponseEntity<String> modifyReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
-        return new ResponseEntity<>(commentService.modifyReply(postId, commentId, commentId, postReplyReq),
+        return new ResponseEntity<>(commentService.modifyReply(postId, commentId, replyId, postReplyReq),
                 HttpStatus.OK);
     }
 
+    /* 답글 삭제 API */
     @Operation(summary = "답글 삭제 API", description="답글을 삭제합니다.")
     @Parameters({
             @Parameter(name = "Authorization", required = true, in = ParameterIn.HEADER, description = "Bearer 과 함께 보내주세요", schema = @Schema(type = "string"))

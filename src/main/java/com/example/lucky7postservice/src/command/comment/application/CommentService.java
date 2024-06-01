@@ -28,6 +28,7 @@ public class CommentService {
     private final ReplyRepository replyRepository;
     private final MemberQueryRepository memberQueryRepository;
 
+    /* 댓글 달기 API */
     @Transactional
     public PostCommentRes comment(Long postId, PostCommentReq commentReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -44,6 +45,7 @@ public class CommentService {
         return new PostCommentRes(comment.getId());
     }
 
+    /* 댓글 수정 API */
     @Transactional
     public String modifyComment(Long postId, Long commentId, PostCommentReq commentReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -63,6 +65,7 @@ public class CommentService {
         return "댓글이 수정되었습니다.";
     }
 
+    /* 댓글 삭제 API */
     @Transactional
     public String deleteComment(Long postId, Long commentId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -82,6 +85,7 @@ public class CommentService {
         return "댓글이 삭제되었습니다.";
     }
 
+    /* 답글 달기 API */
     @Transactional
     public PostReplyRes reply(Long postId, Long commentId, PostReplyReq replyReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -103,6 +107,7 @@ public class CommentService {
         return new PostReplyRes(reply.getId());
     }
 
+    /* 답글 수정 API */
     @Transactional
     public String modifyReply(Long postId, Long commentId, Long replyId, PostReplyReq postReplyReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
@@ -128,6 +133,7 @@ public class CommentService {
         return "답글이 수정되었습니다.";
     }
 
+    /* 답글 삭제 API */
     @Transactional
     public String deleteReply(Long postId, Long commentId, Long replyId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용

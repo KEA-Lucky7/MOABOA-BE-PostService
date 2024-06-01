@@ -19,7 +19,7 @@ public interface WalletQueryRepository extends JpaRepository<QueryWallet, Long> 
             w.memo as memo, w.amount as amount, w.walletType as walletType
             from wallet as w
             where w.post.id=:postId and w.state='ACTIVE'""")
-    List<WalletsRes> findAllByPostIdAndState(Long postId);
+    List<WalletsRes> findAllByPostIdAndState(@Param("postId") Long postId);
 
     @Query(value = """
             select DATE_FORMAT(w.consumedDate, '%Y.%m.%d') as consumedDate, sum(w.amount) as amount

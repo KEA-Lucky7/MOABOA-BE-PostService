@@ -2,7 +2,6 @@ package com.example.lucky7postservice.src.command.wallet.application;
 
 import com.example.lucky7postservice.src.command.wallet.api.dto.ConsumedRes;
 import com.example.lucky7postservice.src.command.wallet.api.dto.GetCalenderRes;
-import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
 import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.src.query.repository.WalletQueryRepository;
@@ -12,14 +11,11 @@ import com.example.lucky7postservice.utils.config.SetTime;
 import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -30,7 +26,7 @@ public class WalletService {
     private final MemberQueryRepository memberQueryRepository;
     private final BlogQueryRepository blogQueryRepository;
 
-    /* 캘린더 반환 API */
+    /* 캘린더 반환 */
     public GetCalenderRes getCalender(String month, String specificDate) throws BaseException {
         Long memberId = 1L;
 

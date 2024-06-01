@@ -3,6 +3,7 @@ package com.example.lucky7postservice.src.command.like.application;
 import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.like.api.dto.GetLikePostsRes;
+import com.example.lucky7postservice.src.command.like.api.dto.LikePostsRes;
 import com.example.lucky7postservice.src.command.like.api.dto.PatchLikePostsReq;
 import com.example.lucky7postservice.src.command.like.domain.PostLike;
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
@@ -82,7 +83,7 @@ public class PostLikeService {
     }
 
     /* 좋아요 누른 글 목록 조회 API */
-    public List<GetLikePostsRes> getLikeList(int page) throws BaseException {
+    public GetLikePostsRes getLikeList(int page) throws BaseException {
         // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
         Long memberId = 1L;
 
@@ -94,7 +95,10 @@ public class PostLikeService {
         blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
 
-        return postQueryRepository.findAllByLikeOrderById(memberId, PageRequest.of(page, 15));
+        int postCnt = postQueryRepository.findByLikeOrderById(memberId);
+        List<LikePostsRes> postList = postQueryRepository.findAllByLikeOrderById(memberId, PageRequest.of(page, 15));
+
+        return new GetLikePostsRes(memberId, postCnt, postList);
     }
 
     /* 좋아요 누른 글 목록 좋아요 취소 API */

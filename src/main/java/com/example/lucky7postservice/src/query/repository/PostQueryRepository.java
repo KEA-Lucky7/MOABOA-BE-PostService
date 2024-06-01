@@ -1,6 +1,6 @@
 package com.example.lucky7postservice.src.query.repository;
 
-import com.example.lucky7postservice.src.command.like.api.dto.GetLikePostsRes;
+import com.example.lucky7postservice.src.command.like.api.dto.LikePostsRes;
 import com.example.lucky7postservice.src.command.post.api.dto.*;
 import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.post.domain.PostType;
@@ -100,8 +100,15 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             where p.postState='ACTIVE' and l.member.id=:memberId
             group by p.id
             order by p.createdAt desc""")
-    List<GetLikePostsRes> findAllByLikeOrderById(@Param("memberId") Long memberId,
-                                                 Pageable pageable);
+    List<LikePostsRes> findAllByLikeOrderById(@Param("memberId") Long memberId,
+                                              Pageable pageable);
+
+    @Query(value = """
+            select count(distinct p.id)
+            from post as p
+            left join post_like as l on l.post.id=p.id
+            where p.postState='ACTIVE' and l.member.id=:memberId""")
+    Integer findByLikeOrderById(@Param("memberId") Long memberId);
 
     @Query(value = """
         select p.id as postId,

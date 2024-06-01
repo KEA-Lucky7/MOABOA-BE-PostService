@@ -1,6 +1,7 @@
 package com.example.lucky7postservice.src.command.like.api;
 
 import com.example.lucky7postservice.src.command.like.api.dto.GetLikePostsRes;
+import com.example.lucky7postservice.src.command.like.api.dto.LikePostsRes;
 import com.example.lucky7postservice.src.command.like.api.dto.PatchLikePostsReq;
 import com.example.lucky7postservice.src.command.like.application.PostLikeService;
 import com.example.lucky7postservice.utils.config.BaseException;
@@ -79,7 +80,7 @@ public class PostLikeController {
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다.")
     })
     @GetMapping("like-list")
-    public ResponseEntity<List<GetLikePostsRes>> getLikeList(@RequestParam("page") int page) throws BaseException {
+    public ResponseEntity<GetLikePostsRes> getLikeList(@RequestParam("page") int page) throws BaseException {
         // TODO : Authorization에서 jwt 추출하기
 
         return new ResponseEntity<>(postLikeService.getLikeList(page),

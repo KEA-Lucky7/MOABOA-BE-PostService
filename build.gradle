@@ -41,7 +41,12 @@ dependencies {
 
 	// Kafka
 	implementation 'org.springframework.kafka:spring-kafka'
-	implementation group: 'org.json', name: 'json', version: '20220320'
+	implementation group: 'org.json', name: 'json', version: '20231013'
+
+	// Debezium - CDC
+	implementation 'io.debezium:debezium-api:2.5.0.Final'
+	implementation 'io.debezium:debezium-embedded:2.5.0.Final'
+	implementation 'io.debezium:debezium-connector-mysql:2.5.0.Final'
 
 	// Database
 	runtimeOnly 'com.h2database:h2'

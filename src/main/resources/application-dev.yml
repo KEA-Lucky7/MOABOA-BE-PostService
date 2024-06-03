@@ -82,5 +82,5 @@ debezium:
       filename: /tmp/dbhistory.dat
     kafka:
       bootstrap:
-        servers: kafka-cluster-kafka-bootstrap:9092
+        servers: ${KAFKA-SERVER}
       topic: test-debezium-connector

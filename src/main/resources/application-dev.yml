@@ -27,9 +27,6 @@ spring:
         format_sql: true
         show_sql: false
 
-  kafka:
-    bootstrap-servers: ${KAFKA-SERVER}
-
 management:
   endpoints:
     web:

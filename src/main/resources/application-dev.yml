@@ -1,0 +1,86 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: Lucky7-PostService
+
+# Database
+  datasource:
+    query:
+      jdbc-url: jdbc:mysql://${QUERY-DB-ADDRESS}:3306/moaboa
+      username: ${QUERY-DB-HOST}
+      password: ${QUERY-DB-PASSWORD}
+    command:
+      jdbc-url: jdbc:mysql://${COMMAND-DB-ADDRESS}:3306/post
+      username: ${COMMAND-DB-HOST}
+      password: ${COMMAND-DB-PASSWORD}
+
+# JPA
+  jpa:
+    database-platform: com.mysql.cj.jdbc.Driver
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        show_sql: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+      base-path: /posts/
+
+# Log
+#logging:
+#  level:
+#    io.debezium: DEBUG
+#    org.apache.kafka: DEBUG
+#    org.springframework.kafka: DEBUG
+
+# Swagger
+springdoc:
+  swagger-ui:
+    path: posts/swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /api-docs/json
+  cache:
+    disabled: true
+  use-fqn: true
+  default-consumes-media-type: application/json;charset=UTF-8
+
+# Debezium
+debezium:
+  name: test-debezium
+  connector:
+    class: io.debezium.connector.mysql.MySqlConnector
+  offset:
+    storage: org.apache.kafka.connect.storage.FileOffsetBackingStore
+    file:
+      filename: /tmp/offsets.dat
+    flush:
+      interval: 60000
+  topic:
+    prefix: test-debezium-connector
+  database:
+    hostname: ${COMMAND-DB-ADDRESS}
+    port: 3306
+    user: ${COMMAND-DB-HOST}
+    password: ${COMMAND-DB-PASSWORD}
+    server:
+      id: 85744
+      name: debezium-test
+    include:
+      list: post
+  history:
+    file:
+      filename: /tmp/dbhistory.dat
+    kafka:
+      bootstrap:
+        servers: kafka-cluster-kafka-bootstrap:9092
+      topic: test-debezium-connector

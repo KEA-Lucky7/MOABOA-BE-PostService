@@ -1,0 +1,87 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: Lucky7-PostService
+
+# Database
+  datasource:
+    query:
+      jdbc-url: ${LOCAL-QUERY-DB-ADDRESS}
+      username: ${LOCAL-QUERY-DB-HOST}
+      password: ${LOCAL-QUERY-DB-PASSWORD}
+    command:
+      jdbc-url: ${LOCAL-COMMAND-DB-ADDRESS}
+      username: ${LOCAL-COMMAND-DB-HOST}
+      password: ${LOCAL-COMMAND-DB-PASSWORD}
+
+# JPA
+  jpa:
+    database-platform: org.mariadb.jdbc.Driver
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: true
+        show_sql: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+      base-path: /posts/
+
+# Log
+#logging:
+#  level:
+#    io.debezium: DEBUG
+#    org.apache.kafka: DEBUG
+#    org.springframework.kafka: DEBUG
+
+# Swagger
+springdoc:
+  swagger-ui:
+    path: posts/swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /api-docs/json
+  cache:
+    disabled: true
+  use-fqn: true
+  default-consumes-media-type: application/json;charset=UTF-8
+
+debezium:
+  name: test-mariadb
+  connector:
+    class: io.debezium.connector.mysql.MySqlConnector
+  offset:
+    storage: org.apache.kafka.connect.storage.FileOffsetBackingStore
+    file:
+      filename: /tmp/offsets.dat
+    flush:
+      interval: 60000
+  topic:
+    prefix: test-debezium-connector
+  database:
+    hostname: localhost
+    port: 3306
+    user: ${LOCAL-COMMAND-DB-HOST}
+    password: ${LOCAL-COMMAND-DB-PASSWORD}
+    server:
+      id: 85744
+      name: debezium-test
+    include:
+      list: moaboa_command
+  history:
+    file:
+      filename: /tmp/dbhistory.dat
+    kafka:
+      bootstrap:
+        servers: localhost:9092
+      topic: test-debezium-connector

@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.utils.datasource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,10 @@ import java.util.HashMap;
         transactionManagerRef = "primaryTransactionManager"
 )
 public class CommandDataSource {
-    @Bean
+    @Value("${spring.jpa.properties.hibernate.dialect}")
+    private String JpaDialect;
+
+    @Bean(name = "commandDatasource")
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.command")
     public DataSource primaryDataSource() {
@@ -46,6 +50,7 @@ public class CommandDataSource {
         em.setJpaVendorAdapter(vendorAdapter);
 
         HashMap<String, Object> prop = new HashMap<>();
+        prop.put("properties.hibernate.dialect", JpaDialect);
         prop.put("hibernate.hbm2ddl.auto", "none");
         prop.put("hibernate.format_sql", true);
         prop.put("hibernate.show_sql", false);

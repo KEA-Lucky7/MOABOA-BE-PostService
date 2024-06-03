@@ -1,6 +1,5 @@
-CommandDataSource.java
-QueryDataSource.java
-application.yml
+datasource/
+resources/
 
 HELP.md
 .gradle

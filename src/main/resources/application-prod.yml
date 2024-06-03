@@ -29,6 +29,9 @@ spring:
         format_sql: true
         show_sql: false
 
+  kafka:
+    bootstrap-servers: localhost:9092
+
 management:
   endpoints:
     web:

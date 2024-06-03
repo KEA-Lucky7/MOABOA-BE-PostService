@@ -10,6 +10,7 @@ import org.apache.kafka.connect.data.SchemaBuilder;
 import org.apache.kafka.connect.data.Struct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class KafkaMessageListener {
         this.objectMapper = new ObjectMapper();
     }
 
-    @KafkaListener(topics = "test-mariadb-connector", groupId = "test-debezium", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "test-debezium-connector", groupId = "test-debezium", containerFactory = "kafkaListenerContainerFactory")
     public void listen(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
         log.info("Received message: Key: {}, Value: {}", record.key(), record.value());
         try {
@@ -108,10 +109,12 @@ public class KafkaMessageListener {
         switch (operation) {
             case "c" -> {
                 Struct after = convertToStruct(sourceRecordValue.get("after"));
+
                 long id = after.getInt64("id");
-                log.info("Object ID : {}", id);
+                log.debug("Object ID : {}", id);
+
                 sql = generateCreateSQL(databaseName, tableName, after);
-                log.info(sql);
+                log.debug(sql);
             }
             case "u" -> {
                 Struct after = convertToStruct(sourceRecordValue.get("after"));
@@ -120,11 +123,11 @@ public class KafkaMessageListener {
                 log.debug("Object ID : {}", id);
 
                 sql = generateUpdateSQL(databaseName, tableName, after) + id;
-                log.info(sql);
+                log.debug(sql);
             }
             case "d" -> {
                 sql = generateDeleteSQL(databaseName, tableName);
-                log.info(sql);
+                log.debug(sql);
             }
             default -> {
                 log.warn("Unsupported operation: {}", operation);

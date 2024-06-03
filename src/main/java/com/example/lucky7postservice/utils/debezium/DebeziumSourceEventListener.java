@@ -16,6 +16,7 @@ import jakarta.annotation.PreDestroy;
 import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,8 @@ public class DebeziumSourceEventListener {
     private final DebeziumEngine<RecordChangeEvent<SourceRecord>> debeziumEngine;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    @Value("${debezium.history.kafka.topic}")
+    private String kafkaTopic;
 
     public DebeziumSourceEventListener(Configuration mariadbConnector, KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper) {
         this.kafkaTemplate = kafkaTemplate;
@@ -66,7 +69,7 @@ public class DebeziumSourceEventListener {
             String key = objectMapper.writeValueAsString(keyMap);
             String value = objectMapper.writeValueAsString(valueMap);
 
-            kafkaTemplate.send("test-mariadb-connector", key, value);
+            kafkaTemplate.send(kafkaTopic, key, value);
         } catch (JsonProcessingException e) {
             log.error("Failed to convert struct to JSON", e);
         }

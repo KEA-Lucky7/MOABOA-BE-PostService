@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.stereotype.Service;
 

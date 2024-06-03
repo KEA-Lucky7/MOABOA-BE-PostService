@@ -5,7 +5,7 @@ spring:
   application:
     name: Lucky7-PostService
 
-  # Database
+# Database
   datasource:
     query:
       jdbc-url: jdbc:mysql://${QUERY-DB-ADDRESS}:3306/moaboa
@@ -15,37 +15,17 @@ spring:
       jdbc-url: jdbc:mysql://${COMMAND-DB-ADDRESS}:3306/post
       username: ${COMMAND-DB-HOST}
       password: ${COMMAND-DB-PASSWORD}
-#    query:
-#      jdbc-url: ${LOCAL-QUERY-DB-ADDRESS}
-#      username: ${LOCAL-QUERY-DB-HOST}
-#      password: ${LOCAL-QUERY-DB-PASSWORD}
-#    command:
-#      jdbc-url: ${LOCAL-COMMAND-DB-ADDRESS}
-#      username: ${LOCAL-COMMAND-DB-HOST}
-#      password: ${LOCAL-COMMAND-DB-PASSWORD}
 
-  # JPA
+# JPA
   jpa:
     database-platform: com.mysql.cj.jdbc.Driver
     hibernate:
-      ddl-auto: none        # none, create, create-drop, update, validate
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
         show_sql: false
-
-#  jpa:
-#    database-platform: org.mariadb.jdbc.Driver
-#    hibernate:
-#      ddl-auto: create        # none, create, create-drop, update, validate
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.MariaDBDialect
-#        format_sql: true
-#        show_sql: false
 
 management:
   endpoints:
@@ -54,13 +34,12 @@ management:
         include: health
       base-path: /posts/
 
+# Log
 #logging:
 #  level:
 #    io.debezium: DEBUG
 #    org.apache.kafka: DEBUG
 #    org.springframework.kafka: DEBUG
-
-
 
 # Swagger
 springdoc:
@@ -74,3 +53,34 @@ springdoc:
     disabled: true
   use-fqn: true
   default-consumes-media-type: application/json;charset=UTF-8
+
+# Debezium
+debezium:
+  name: test-debezium
+  connector:
+    class: io.debezium.connector.mysql.MySqlConnector
+  offset:
+    storage: org.apache.kafka.connect.storage.FileOffsetBackingStore
+    file:
+      filename: /tmp/offsets.dat
+    flush:
+      interval: 60000
+  topic:
+    prefix: test-debezium-connector
+  database:
+    hostname: ${COMMAND-DB-ADDRESS}
+    port: 3306
+    user: ${COMMAND-DB-HOST}
+    password: ${COMMAND-DB-PASSWORD}
+    server:
+      id: 85744
+      name: debezium-test
+    include:
+      list: post
+  history:
+    file:
+      filename: /tmp/dbhistory.dat
+    kafka:
+      bootstrap:
+        servers: kafka-cluster-kafka-bootstrap:9092
+      topic: test-debezium-connector

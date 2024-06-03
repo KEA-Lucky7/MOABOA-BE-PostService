@@ -28,7 +28,7 @@ spring:
         show_sql: false
 
   kafka:
-    bootstrap-servers: ${KAFKA-SERVER}
+    bootstrap-servers: localhost:9092
 
 management:
   endpoints:
@@ -85,5 +85,5 @@ debezium:
       filename: /tmp/dbhistory.dat
     kafka:
       bootstrap:
-        servers: ${KAFKA-SERVER}
+        servers: localhost:9092
       topic: test-debezium-connector

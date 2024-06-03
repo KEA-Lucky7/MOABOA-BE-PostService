@@ -22,7 +22,7 @@ import java.util.HashMap;
         transactionManagerRef = "secondTransactionManager"
 )
 public class QueryDataSource {
-    @Bean
+    @Bean(name = "queryDatasource")
     @ConfigurationProperties(prefix = "spring.datasource.query")
     public DataSource secondDataSource() {
         return DataSourceBuilder.create().build();

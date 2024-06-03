@@ -23,7 +23,7 @@ import java.util.HashMap;
         transactionManagerRef = "primaryTransactionManager"
 )
 public class CommandDataSource {
-    @Bean
+    @Bean(name = "commandDatasource")
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.command")
     public DataSource primaryDataSource() {

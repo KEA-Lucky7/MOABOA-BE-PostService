@@ -54,6 +54,14 @@ management:
         include: health
       base-path: /posts/
 
+#logging:
+#  level:
+#    io.debezium: DEBUG
+#    org.apache.kafka: DEBUG
+#    org.springframework.kafka: DEBUG
+
+
+
 # Swagger
 springdoc:
   swagger-ui:

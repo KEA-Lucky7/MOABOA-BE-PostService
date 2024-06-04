@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 public class FeignErrorDecoder implements ErrorDecoder {
     @Override
     public Exception decode(String methodKey, Response response) {
-        return new BaseException(BaseResponseStatus.INVALID_USER_FEIGN);
+        if (response.status() == 403) {
+            return new BaseException(BaseResponseStatus.INVALID_USER_FEIGN);
+        }
+        return new Exception(response.reason());
     }
 }

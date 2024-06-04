@@ -25,7 +25,7 @@ public interface PostQueryRepository extends JpaRepository<QueryPost, Long> {
             p.blog.id as blogId, p.member.id as memberId, p.member.nickname as nickname,
             DATE_FORMAT(p.createdAt, '%y.%m.%d') as createdAt from post as p
             where p.postState='ACTIVE'
-            order by (select count(l) from post_like as l where l.post.id = p.id) desc, p.id asc""")
+            order by (select count(l) from post_like as l where l.post.id = p.id) desc, p.id desc""")
     List<GetHomePostsRes> findAllOrderByLikeCnt(Pageable pageable);
 
     @Query(value = """

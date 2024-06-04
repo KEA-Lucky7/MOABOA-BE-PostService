@@ -37,8 +37,9 @@ public class WalletController {
     public ResponseEntity<GetCalenderRes> getCalender(
             @RequestParam("month") String month,
             @RequestParam("specificDate") String specificDate) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-        return new ResponseEntity<>(walletService.getCalender(month, specificDate),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                walletService.getCalender(month, specificDate),
+                HttpStatus.OK
+        );
     }
 }

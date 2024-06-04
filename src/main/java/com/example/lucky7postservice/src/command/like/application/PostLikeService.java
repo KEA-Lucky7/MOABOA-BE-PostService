@@ -1,7 +1,6 @@
 package com.example.lucky7postservice.src.command.like.application;
 
-import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
-import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
+import com.example.lucky7postservice.src.auth.AuthServiceClient;
 import com.example.lucky7postservice.src.command.like.api.dto.GetLikePostsRes;
 import com.example.lucky7postservice.src.command.like.api.dto.LikePostsRes;
 import com.example.lucky7postservice.src.command.like.api.dto.PatchLikePostsReq;
@@ -30,20 +29,19 @@ import java.util.Optional;
 public class PostLikeService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
-    private final CommentRepository commentRepository;
-    private final ReplyRepository replyRepository;
 
     private final MemberQueryRepository memberQueryRepository;
+    private final AuthServiceClient authServiceClient;
+    private Long memberId = 1L;
+
     private final BlogQueryRepository blogQueryRepository;
     private final PostQueryRepository postQueryRepository;
 
     /* 글 공감 API */
     @Transactional
     public String like(Long postId) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        memberId = userAndBlogValidation();
 
         // 글 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -63,10 +61,8 @@ public class PostLikeService {
     /* 글 공감 취소 API */
     @Transactional
     public String dislike(Long postId) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        memberId = userAndBlogValidation();
 
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -84,16 +80,8 @@ public class PostLikeService {
 
     /* 좋아요 누른 글 목록 조회 API */
     public GetLikePostsRes getLikeList(int page) throws BaseException {
-        // TODO : 각 블로그의 주인장 정보 받아오기, 밑에 코드 필요 없음
-        Long memberId = 1L;
-
-        // 멤버 존재 여부 확인
-        memberQueryRepository.findById(memberId)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        // 멤버, 블로그 예외 처리
+        memberId = userAndBlogValidation();
 
         int postCnt = postQueryRepository.findByLikeOrderById(memberId);
         List<LikePostsRes> postList = postQueryRepository.findAllByLikeOrderById(memberId, PageRequest.of(page, 15));
@@ -104,10 +92,8 @@ public class PostLikeService {
     /* 좋아요 누른 글 목록 좋아요 취소 API */
     @Transactional
     public String dislikeList(PatchLikePostsReq patchLikePostsReq) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        memberId = userAndBlogValidation();
 
         List<Long> postIdList = patchLikePostsReq.getPostIdList();
         for(Long postId : postIdList) {
@@ -116,5 +102,19 @@ public class PostLikeService {
         }
 
         return "글 좋아요를 모두 취소했습니다.";
+    }
+
+    /* 멤버, 블로그 예외 처리 */
+    public Long userAndBlogValidation() throws BaseException {
+        // 멤버 예외 처리
+        memberId = authServiceClient.validateToken().getBody();
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 예외 처리
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        return memberId;
     }
 }

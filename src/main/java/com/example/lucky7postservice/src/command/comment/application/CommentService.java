@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.src.command.comment.application;
 
+import com.example.lucky7postservice.src.auth.AuthServiceClient;
 import com.example.lucky7postservice.src.command.comment.api.dto.PostCommentReq;
 import com.example.lucky7postservice.src.command.comment.api.dto.PostCommentRes;
 import com.example.lucky7postservice.src.command.comment.api.dto.PostReplyReq;
@@ -11,6 +12,8 @@ import com.example.lucky7postservice.src.command.comment.domain.repository.Reply
 import com.example.lucky7postservice.src.command.post.domain.Post;
 import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
+import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
+import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
@@ -26,16 +29,18 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
-    private final MemberQueryRepository memberQueryRepository;
 
+    private final MemberQueryRepository memberQueryRepository;
+    private final AuthServiceClient authServiceClient;
     private Long memberId = 1L;
+
+    private final BlogQueryRepository blogQueryRepository;
 
     /* 댓글 달기 API */
     @Transactional
     public PostCommentRes comment(Long postId, PostCommentReq commentReq) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        memberId = userAndBlogValidation();
 
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
@@ -49,10 +54,8 @@ public class CommentService {
     /* 댓글 수정 API */
     @Transactional
     public String modifyComment(Long postId, Long commentId, PostCommentReq commentReq) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        memberId = userAndBlogValidation();
 
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
@@ -69,10 +72,8 @@ public class CommentService {
     /* 댓글 삭제 API */
     @Transactional
     public String deleteComment(Long postId, Long commentId) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        userAndBlogValidation();
 
         // 존재하는 글인지 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
@@ -89,10 +90,8 @@ public class CommentService {
     /* 답글 달기 API */
     @Transactional
     public PostReplyRes reply(Long postId, Long commentId, PostReplyReq replyReq) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        memberId = userAndBlogValidation();
 
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
@@ -111,10 +110,8 @@ public class CommentService {
     /* 답글 수정 API */
     @Transactional
     public String modifyReply(Long postId, Long commentId, Long replyId, PostReplyReq postReplyReq) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        memberId = userAndBlogValidation();
 
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
@@ -137,10 +134,8 @@ public class CommentService {
     /* 답글 삭제 API */
     @Transactional
     public String deleteReply(Long postId, Long commentId, Long replyId) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버, 블로그 예외 처리
+        userAndBlogValidation();
 
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
@@ -156,5 +151,19 @@ public class CommentService {
 
         reply.deleteReply();
         return "답글이 성공적으로 삭제되었습니다.";
+    }
+
+    /* 멤버, 블로그 예외 처리 */
+    public Long userAndBlogValidation() throws BaseException {
+        // 멤버 예외 처리
+        memberId = authServiceClient.validateToken().getBody();
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 예외 처리
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        return memberId;
     }
 }

@@ -40,10 +40,10 @@ public class PostLikeController {
     })
     @PostMapping("/{postId}/like")
     public ResponseEntity<String> like(@PathVariable Long postId) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postLikeService.like(postId),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postLikeService.like(postId),
+                HttpStatus.OK
+        );
     }
 
     /* 글 공감 취소 API */
@@ -62,10 +62,10 @@ public class PostLikeController {
     })
     @DeleteMapping("/{postId}/like")
     public ResponseEntity<String> dislike(@PathVariable Long postId) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postLikeService.dislike(postId),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postLikeService.dislike(postId),
+                HttpStatus.OK
+        );
     }
 
     /* 좋아요 누른 글 목록 반환 API */
@@ -81,10 +81,10 @@ public class PostLikeController {
     })
     @GetMapping("like-list")
     public ResponseEntity<GetLikePostsRes> getLikeList(@RequestParam("page") int page) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postLikeService.getLikeList(page),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postLikeService.getLikeList(page),
+                HttpStatus.OK
+        );
     }
 
     /* 좋아요 누른 글 목록 좋아요 취소 API */
@@ -101,10 +101,10 @@ public class PostLikeController {
     })
     @PatchMapping("/like-list")
     public ResponseEntity<String> dislikeList(@RequestBody PatchLikePostsReq patchLikePostsReq) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postLikeService.dislikeList(patchLikePostsReq),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postLikeService.dislikeList(patchLikePostsReq),
+                HttpStatus.OK
+        );
     }
 
 }

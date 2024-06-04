@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 public class KafkaMessageListener {
     private final DataSource queryDatasource;
     private final ObjectMapper objectMapper;
+    @Value("${debezium.database.target.list}")
+    private String queryDatabaseName;
 
     @Autowired
     public KafkaMessageListener(@Qualifier("queryDatasource") DataSource queryDatasource) {
@@ -104,7 +106,6 @@ public class KafkaMessageListener {
             return;
         }
 
-        databaseName="moaboa_query";
         String sql;
         switch (operation) {
             case "c" -> {
@@ -113,7 +114,7 @@ public class KafkaMessageListener {
                 long id = after.getInt64("id");
                 log.debug("Object ID : {}", id);
 
-                sql = generateCreateSQL(databaseName, tableName, after);
+                sql = generateCreateSQL(queryDatabaseName, tableName, after);
                 log.debug(sql);
             }
             case "u" -> {
@@ -122,11 +123,11 @@ public class KafkaMessageListener {
                 long id = after.getInt64("id");
                 log.debug("Object ID : {}", id);
 
-                sql = generateUpdateSQL(databaseName, tableName, after) + id;
+                sql = generateUpdateSQL(queryDatabaseName, tableName, after) + id;
                 log.debug(sql);
             }
             case "d" -> {
-                sql = generateDeleteSQL(databaseName, tableName);
+                sql = generateDeleteSQL(queryDatabaseName, tableName);
                 log.debug(sql);
             }
             default -> {

@@ -38,6 +38,7 @@ public class KafkaMessageListener {
     @KafkaListener(topics = "test-debezium-connector", groupId = "test-debezium", containerFactory = "kafkaListenerContainerFactory")
     public void listen(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
         log.info("Received message: Key: {}, Value: {}", record.key(), record.value());
+
         try {
             JsonNode jsonNode = objectMapper.readTree(record.value());
             String databaseName = jsonNode.get("source").get("db") != null ? jsonNode.get("source").get("db").asText() : null;
@@ -115,7 +116,7 @@ public class KafkaMessageListener {
                 log.debug("Object ID : {}", id);
 
                 sql = generateCreateSQL(queryDatabaseName, tableName, after);
-                log.debug(sql);
+                log.info(sql);
             }
             case "u" -> {
                 Struct after = convertToStruct(sourceRecordValue.get("after"));
@@ -124,11 +125,11 @@ public class KafkaMessageListener {
                 log.debug("Object ID : {}", id);
 
                 sql = generateUpdateSQL(queryDatabaseName, tableName, after) + id;
-                log.debug(sql);
+                log.info(sql);
             }
             case "d" -> {
                 sql = generateDeleteSQL(queryDatabaseName, tableName);
-                log.debug(sql);
+                log.info(sql);
             }
             default -> {
                 log.warn("Unsupported operation: {}", operation);

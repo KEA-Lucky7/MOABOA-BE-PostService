@@ -1,4 +1,4 @@
-package com.example.lucky7postservice.src.command.auth;
+package com.example.lucky7postservice.src.auth;
 
 import com.example.lucky7postservice.utils.openfeign.HeaderConfig;
 import org.springframework.cloud.openfeign.FeignClient;

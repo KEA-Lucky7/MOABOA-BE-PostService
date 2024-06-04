@@ -1,6 +1,6 @@
 package com.example.lucky7postservice.src.command.comment.application;
 
-import com.example.lucky7postservice.src.command.auth.AuthServiceClient;
+import com.example.lucky7postservice.src.auth.AuthServiceClient;
 import com.example.lucky7postservice.src.command.comment.domain.Comment;
 import com.example.lucky7postservice.src.command.comment.domain.Reply;
 import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
@@ -20,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Service
 @RequiredArgsConstructor

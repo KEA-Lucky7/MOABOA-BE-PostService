@@ -98,7 +98,7 @@ public class PostService {
     @Transactional
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
         // 멤버 예외 처리
-//        memberId = userValidation();
+        memberId = userValidation();
 
         // 블로그 예외 처리
         QueryBlog queryBlog = blogValidationByMemberId(memberId);
@@ -134,8 +134,6 @@ public class PostService {
                     SetTime.stringToLocalDate(wallet.getConsumedDate()), wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
         }
 
-//        postProducer.send("post", post);
-
         return new PostPostRes(post.getId());
     }
 
@@ -143,7 +141,7 @@ public class PostService {
     @Transactional
     public PostPostRes savePost(Long postId, PostSavedPostReq postReq) throws BaseException {
         // 멤버 예외 처리
-//        memberId = userValidation();
+        memberId = userValidation();
 
         // 블로그 예외 처리
         QueryBlog queryBlog = blogValidationByMemberId(memberId);
@@ -178,7 +176,7 @@ public class PostService {
     /* 임시 저장 목록 조회 */
     public List<GetSavedPostsRes> getSavedPosts() throws BaseException {
         // 멤버 예외 처리
-//        memberId = userValidation();
+        memberId = userValidation();
 
         // 블로그 예외 처리
         blogValidationByMemberId(memberId);
@@ -189,7 +187,7 @@ public class PostService {
     /* 임시 저장한 글 상세 조회 */
     public GetSavedPostRes getSavedPost(Long postId) throws BaseException {
         // 멤버 예외 처리
-//        memberId = userValidation();
+        memberId = userValidation();
 
         // 블로그 예외 처리
         blogValidationByMemberId(memberId);
@@ -218,7 +216,7 @@ public class PostService {
     /* 글 상세 조회 */
     public GetPostRes getPost(Long postId) throws BaseException {
         // 멤버 예외 처리
-//        memberId = userValidation();
+        memberId = userValidation();
 
         // 게시물 존재 여부 확인
         PostRes postRes = postQueryRepository.findByPostIdAndState(postId, memberId)
@@ -274,7 +272,7 @@ public class PostService {
     @Transactional
     public String deletePost(Long postId) throws BaseException {
         // 멤버 예외 처리
-//        memberId = userValidation();
+        memberId = userValidation();
 
         // 블로그 예외 처리
         blogValidationByMemberId(memberId);
@@ -307,7 +305,7 @@ public class PostService {
     @Transactional
     public PostPostRes modifyPost(Long postId, PostPostReq postReq) throws BaseException {
         // 멤버 예외 처리
-//        memberId = userValidation();
+        memberId = userValidation();
 
         // 블로그 예외 처리
         blogValidationByMemberId(memberId);

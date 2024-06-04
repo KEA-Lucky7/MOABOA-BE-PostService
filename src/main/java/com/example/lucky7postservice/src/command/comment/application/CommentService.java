@@ -55,7 +55,7 @@ public class CommentService {
     @Transactional
     public String modifyComment(Long postId, Long commentId, PostCommentReq commentReq) throws BaseException {
         // 멤버, 블로그 예외 처리
-//        memberId = userAndBlogValidation();
+        memberId = userAndBlogValidation();
 
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
                 () -> new BaseException(BaseResponseStatus.INVALID_POST));
@@ -73,7 +73,7 @@ public class CommentService {
     @Transactional
     public String deleteComment(Long postId, Long commentId) throws BaseException {
         // 멤버, 블로그 예외 처리
-//        userAndBlogValidation();
+        userAndBlogValidation();
 
         // 존재하는 글인지 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
@@ -91,7 +91,7 @@ public class CommentService {
     @Transactional
     public PostReplyRes reply(Long postId, Long commentId, PostReplyReq replyReq) throws BaseException {
         // 멤버, 블로그 예외 처리
-//        memberId = userAndBlogValidation();
+        memberId = userAndBlogValidation();
 
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
@@ -111,7 +111,7 @@ public class CommentService {
     @Transactional
     public String modifyReply(Long postId, Long commentId, Long replyId, PostReplyReq postReplyReq) throws BaseException {
         // 멤버, 블로그 예외 처리
-//        memberId = userAndBlogValidation();
+        memberId = userAndBlogValidation();
 
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(
@@ -135,7 +135,7 @@ public class CommentService {
     @Transactional
     public String deleteReply(Long postId, Long commentId, Long replyId) throws BaseException {
         // 멤버, 블로그 예외 처리
-//        userAndBlogValidation();
+        userAndBlogValidation();
 
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE).orElseThrow(

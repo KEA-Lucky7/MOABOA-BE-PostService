@@ -80,6 +80,8 @@ debezium:
       name: debezium-test
     include:
       list: post
+    target:
+      list: moaboa
   history:
     file:
       filename: /tmp/dbhistory.dat

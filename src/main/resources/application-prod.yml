@@ -81,6 +81,8 @@ debezium:
       name: debezium-test
     include:
       list: moaboa_command
+    target:
+      list : moaboa_query
   history:
     file:
       filename: /tmp/dbhistory.dat

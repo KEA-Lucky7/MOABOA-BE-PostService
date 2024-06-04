@@ -1,15 +1,14 @@
 package com.example.lucky7postservice.src.command.comment.application;
 
-import com.example.lucky7postservice.src.auth.AuthServiceClient;
-import com.example.lucky7postservice.src.command.comment.domain.Comment;
-import com.example.lucky7postservice.src.command.comment.domain.Reply;
-import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
-import com.example.lucky7postservice.src.command.post.domain.Post;
 import com.example.lucky7postservice.src.command.comment.api.dto.PostCommentReq;
 import com.example.lucky7postservice.src.command.comment.api.dto.PostCommentRes;
 import com.example.lucky7postservice.src.command.comment.api.dto.PostReplyReq;
 import com.example.lucky7postservice.src.command.comment.api.dto.PostReplyRes;
+import com.example.lucky7postservice.src.command.comment.domain.Comment;
+import com.example.lucky7postservice.src.command.comment.domain.Reply;
+import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
+import com.example.lucky7postservice.src.command.post.domain.Post;
 import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
@@ -17,7 +16,6 @@ import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,16 +28,12 @@ public class CommentService {
     private final ReplyRepository replyRepository;
     private final MemberQueryRepository memberQueryRepository;
 
-//    private final AuthServiceClient authServiceClient;
     private Long memberId = 1L;
 
     /* 댓글 달기 API */
     @Transactional
     public PostCommentRes comment(Long postId, PostCommentReq commentReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
-//        ResponseEntity<Long> getMemberId = authServiceClient.validateToken();
-//        memberId = getMemberId.getBody();
-
         memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 

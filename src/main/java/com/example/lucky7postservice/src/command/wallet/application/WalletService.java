@@ -34,7 +34,7 @@ public class WalletService {
     /* 캘린더 반환 */
     public GetCalenderRes getCalender(String month, String specificDate) throws BaseException {
         // 멤버 예외 처리
-        memberId = userAndBlogValidation();
+//        memberId = userAndBlogValidation();
 
         LocalDate start = SetTime.getMonthStart(month);
         LocalDate end = SetTime.getMonthEnd(month);

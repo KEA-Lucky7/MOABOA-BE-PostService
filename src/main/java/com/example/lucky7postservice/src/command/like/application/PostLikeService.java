@@ -41,7 +41,7 @@ public class PostLikeService {
     @Transactional
     public String like(Long postId) throws BaseException {
         // 멤버, 블로그 예외 처리
-        memberId = userAndBlogValidation();
+//        memberId = userAndBlogValidation();
 
         // 글 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -62,7 +62,7 @@ public class PostLikeService {
     @Transactional
     public String dislike(Long postId) throws BaseException {
         // 멤버, 블로그 예외 처리
-        memberId = userAndBlogValidation();
+//        memberId = userAndBlogValidation();
 
         // 글 존재 여부 확인
         postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -81,7 +81,7 @@ public class PostLikeService {
     /* 좋아요 누른 글 목록 조회 API */
     public GetLikePostsRes getLikeList(int page) throws BaseException {
         // 멤버, 블로그 예외 처리
-        memberId = userAndBlogValidation();
+//        memberId = userAndBlogValidation();
 
         int postCnt = postQueryRepository.findByLikeOrderById(memberId);
         List<LikePostsRes> postList = postQueryRepository.findAllByLikeOrderById(memberId, PageRequest.of(page, 15));
@@ -93,7 +93,7 @@ public class PostLikeService {
     @Transactional
     public String dislikeList(PatchLikePostsReq patchLikePostsReq) throws BaseException {
         // 멤버, 블로그 예외 처리
-        memberId = userAndBlogValidation();
+//        memberId = userAndBlogValidation();
 
         List<Long> postIdList = patchLikePostsReq.getPostIdList();
         for(Long postId : postIdList) {

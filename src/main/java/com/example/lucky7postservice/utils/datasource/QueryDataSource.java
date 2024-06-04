@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.utils.datasource;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -26,6 +27,7 @@ public class QueryDataSource {
     @Value("${spring.jpa.properties.hibernate.dialect}")
     private String JpaDialect;
 
+    @Qualifier("queryDatasource")
     @Bean(name = "queryDatasource")
     @ConfigurationProperties(prefix = "spring.datasource.query")
     public DataSource secondDataSource() {

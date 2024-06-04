@@ -40,10 +40,10 @@ public class CommentController {
     })
     @PostMapping("/{postId}/comment")
     public ResponseEntity<PostCommentRes> comment(@PathVariable Long postId, @Valid @RequestBody PostCommentReq postCommentReq) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(commentService.comment(postId, postCommentReq)
-                , HttpStatus.OK);
+        return new ResponseEntity<>(
+                commentService.comment(postId, postCommentReq)
+                , HttpStatus.OK
+        );
     }
 
     /* 댓글 수정 API */
@@ -62,10 +62,10 @@ public class CommentController {
             })
     @PatchMapping("/{postId}/comment/{commentId}")
     public ResponseEntity<String> modifyComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody PostCommentReq postCommentReq) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(commentService.modifyComment(postId, commentId, postCommentReq)
-                , HttpStatus.OK);
+        return new ResponseEntity<>(
+                commentService.modifyComment(postId, commentId, postCommentReq)
+                , HttpStatus.OK
+        );
     }
 
     /* 댓글 삭제 API */
@@ -84,10 +84,10 @@ public class CommentController {
     })
     @DeleteMapping("/{postId}/comment/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(commentService.deleteComment(postId, commentId)
-                , HttpStatus.OK);
+        return new ResponseEntity<>(
+                commentService.deleteComment(postId, commentId)
+                , HttpStatus.OK
+        );
     }
 
     /* 답글 등록 API */
@@ -106,10 +106,10 @@ public class CommentController {
     })
     @PostMapping("/{postId}/comment/{commentId}/reply")
     public ResponseEntity<PostReplyRes> comment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(commentService.reply(postId, commentId, postReplyReq),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                commentService.reply(postId, commentId, postReplyReq),
+                HttpStatus.OK
+        );
     }
 
     /* 답글 수정 API */
@@ -129,10 +129,10 @@ public class CommentController {
     })
     @PatchMapping("/{postId}/comment/{commentId}/reply/{replyId}")
     public ResponseEntity<String> modifyReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId, @Valid @RequestBody PostReplyReq postReplyReq) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(commentService.modifyReply(postId, commentId, replyId, postReplyReq),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                commentService.modifyReply(postId, commentId, replyId, postReplyReq),
+                HttpStatus.OK
+        );
     }
 
     /* 답글 삭제 API */
@@ -152,9 +152,9 @@ public class CommentController {
     })
     @DeleteMapping("/{postId}/comment/{commentId}/reply/{replyId}")
     public ResponseEntity<String> deleteReply(@PathVariable Long postId, @PathVariable Long commentId, @PathVariable Long replyId) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(commentService.deleteReply(postId, commentId, replyId),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                commentService.deleteReply(postId, commentId, replyId),
+                HttpStatus.OK
+        );
     }
 }

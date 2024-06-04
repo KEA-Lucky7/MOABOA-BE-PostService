@@ -58,11 +58,11 @@ public class PostService {
     /* 블로그 해시태그 목록 조회 */
     public GetHashtagsRes getHashtags(Long blogId) throws BaseException {
         // 블로그 존재 여부 확인
-        QueryBlog blog = blogQueryRepository.findByIdAndState(blogId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        QueryBlog blog = blogValidationByBlogId(blogId);
 
         // 블로그 주인장 존재 여부 확인
-        memberQueryRepository.findById(blog.getMember().getId())
+        Long blogMemberId = blog.getMember().getId();
+        memberQueryRepository.findById(blogMemberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         List<String> freeList = postQueryRepository.findAllHashtagByBlogId(blogId, PostType.FREE);
@@ -74,8 +74,7 @@ public class PostService {
     /* 블로그 글 목록 조회 */
     public GetBlogPostsRes getBlogPosts(int page, Long blogId, String postType, String hashtag) throws BaseException {
         // 블로그 존재 여부 확인
-        QueryBlog blog = blogQueryRepository.findByIdAndState(blogId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        QueryBlog blog = blogValidationByBlogId(blogId);
 
         // 블로그 주인 존재 여부 확인
         Long blogMemberId = blog.getMember().getId();
@@ -101,9 +100,8 @@ public class PostService {
         // 멤버 예외 처리
         memberId = userValidation();
 
-        // 블로그 존재 여부 확인
-        QueryBlog queryBlog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        // 블로그 예외 처리
+        QueryBlog queryBlog = blogValidationByMemberId(memberId);
 
         Post post;
         PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
@@ -147,9 +145,8 @@ public class PostService {
         // 멤버 예외 처리
         memberId = userValidation();
 
-        // 블로그 존재 여부 확인
-        QueryBlog queryBlog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        // 블로그 예외 처리
+        QueryBlog queryBlog = blogValidationByMemberId(memberId);
 
         Post post;
         PostType postType = postReq.getPostType().equals("FREE") ? PostType.FREE : PostType.WALLET;
@@ -183,9 +180,8 @@ public class PostService {
         // 멤버 예외 처리
         memberId = userValidation();
 
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        // 블로그 예외 처리
+        blogValidationByMemberId(memberId);
 
         return postQueryRepository.findAllTemporaryPosts(memberId);
     }
@@ -195,9 +191,8 @@ public class PostService {
         // 멤버 예외 처리
         memberId = userValidation();
 
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        // 블로그 예외 처리
+        blogValidationByMemberId(memberId);
 
         // 게시물 존재 여부 확인
         QueryPost post = postQueryRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -230,9 +225,8 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
         Long postMemberId = postRes.getMemberId();
 
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(postMemberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        // 블로그 예외 처리
+        blogValidationByMemberId(postMemberId);
 
         List<String> hashtagList = hashtagQueryRepository.findAllByPostId(postId);
         List<WalletsRes> walletList = walletQueryRepository.findAllByPostIdAndState(postId);
@@ -282,9 +276,8 @@ public class PostService {
         // 멤버 예외 처리
         memberId = userValidation();
 
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        // 블로그 예외 처리
+        blogValidationByMemberId(memberId);
 
         // 게시물 존재 여부 확인
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)
@@ -316,9 +309,8 @@ public class PostService {
         // 멤버 예외 처리
         memberId = userValidation();
 
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+        // 블로그 예외 처리
+        blogValidationByMemberId(memberId);
 
         // TODO : 대표 해시태그 적용
 
@@ -376,5 +368,16 @@ public class PostService {
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         return memberId;
+    }
+
+    /* 블로그 예외 처리 */
+    public QueryBlog blogValidationByBlogId(Long blogId) throws BaseException {
+        return blogQueryRepository.findByIdAndState(blogId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+    }
+
+    public QueryBlog blogValidationByMemberId(Long memberId) throws BaseException {
+        return blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
     }
 }

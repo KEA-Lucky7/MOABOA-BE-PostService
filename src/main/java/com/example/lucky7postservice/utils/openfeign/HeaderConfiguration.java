@@ -8,7 +8,7 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-public class HeaderConfig {
+public class HeaderConfiguration {
     @Bean
     public RequestInterceptor requestInterceptor() {
         return template -> {

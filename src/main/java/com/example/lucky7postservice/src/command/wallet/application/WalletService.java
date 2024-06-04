@@ -42,6 +42,8 @@ public class WalletService {
         LocalDate today = LocalDate.now();
 
         LocalDate specific = SetTime.stringToLocalDate(specificDate);
+        if(!SetTime.specificDateValidation(specific)) throw new BaseException(BaseResponseStatus.INVALID_DATE);
+
         Integer specificAmount = walletQueryRepository.findByMemberIdAndStateAndConsumedDate(memberId, specific, today)
                 .orElse(0);
 

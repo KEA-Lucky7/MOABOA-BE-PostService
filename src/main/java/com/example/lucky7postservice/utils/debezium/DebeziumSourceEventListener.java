@@ -54,7 +54,7 @@ public class DebeziumSourceEventListener {
         Struct sourceRecordKey = (Struct) sourceRecord.key();
         Struct sourceRecordValue = (Struct) sourceRecord.value();
 
-        log.info("Key = '" + sourceRecordKey + "' value = '" + sourceRecordValue + "'");
+        log.debug("Key = '" + sourceRecordKey + "' value = '" + sourceRecordValue + "'");
 
         // Convert Struct to Map
         Map<String, Object> keyMap = convertStructToMap(sourceRecordKey);

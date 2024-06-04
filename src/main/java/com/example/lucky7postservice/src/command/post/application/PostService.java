@@ -82,12 +82,11 @@ public class PostService {
         memberQueryRepository.findById(blogMemberId)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG_USER));
 
-        PostType type = postType.equals("자유글") ? PostType.FREE : PostType.WALLET;
-
         List<GetPosts> posts;
         if(postType.equals("ALL") && hashtag.equals("ALL")) {
             posts = postQueryRepository.findAllBlogPosts(blogId, PageRequest.of(page, 15));
         } else {
+            PostType type = postType.equals("자유글") ? PostType.FREE : PostType.WALLET;
             posts = postQueryRepository.findAllBlogPostsWithHashtag(blogId, PageRequest.of(page, 15), type, hashtag);
         }
 

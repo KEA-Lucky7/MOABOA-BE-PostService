@@ -17,7 +17,11 @@ public enum BaseResponseStatus {
     INTERNAL_SERVER_ERROR("GLB-ERR-003", HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류입니다."),
     WRONG_STATUS_CODE("GLB-ERR-004", HttpStatus.NOT_FOUND, "존재하지 않은 상태코드입니다."),
     INVALID_PARAMETERS("GLB-ERR-005", HttpStatus.BAD_REQUEST, "입력값이 잘못되었습니다."),
-    INVALID_USER_FEIGN("AUT-ERR-002", HttpStatus.FORBIDDEN, "권한이 없는 사용자입니다"),
+    UNAUTHORIZED_CLIENT("AUT-ERR-002", HttpStatus.FORBIDDEN, "권한이 없는 사용자입니다"),
+    EXPIRED_ACCESS_TOKEN("AUT-ERR-003", HttpStatus.UNAUTHORIZED, "만료된 액세스 토큰입니다"),
+    EXPIRED_REFRESH_TOKEN("AUT-ERR-004", HttpStatus.UNAUTHORIZED, "만료된 리프레시 토큰입니다"),
+    EMPTY_ACCESS_TOKEN("AUT-ERR-005", HttpStatus.BAD_REQUEST, "액세스 토큰이 비어있습니다"),
+    BAD_ACCESS_TOKEN("AUT-ERR-006", HttpStatus.BAD_REQUEST, "액세스 토큰이 유효하지 않습니다"),
 
     /** 유저 관련 Response **/
     INVALID_USER("GLB-ERR-006", HttpStatus.UNAUTHORIZED, "존재하지 않는 유저입니다."),

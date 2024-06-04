@@ -24,4 +24,9 @@ public class HeaderConfig {
             }
         };
     }
+
+    @Bean
+    public FeignErrorDecoder errorDecoder() {
+        return new FeignErrorDecoder();
+    }
 }

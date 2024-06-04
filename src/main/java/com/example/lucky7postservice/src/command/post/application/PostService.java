@@ -25,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Slf4j
@@ -119,20 +120,16 @@ public class PostService {
             post.savePost(postType, postReq.getTitle(), postReq.getContent(),
                     postReq.getPreview(), postReq.getThumbnail(), postReq.getMainHashtag());
 
-            // 이미 저장되어 있는 해시태그를 삭제
-            hashtagRepository.deleteAll(hashtagRepository.findAllByPostId(postId));
+            post.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+
+            // 이미 저장되어 있는 해시태그, 소비 내역을 삭제
+            deleteHashtag(postId);
+            deleteWallet(postId);
         }
 
-        // 해시태그 저장
-        for(String hashtag : postReq.getHashtagList()) {
-            hashtagRepository.save(Hashtag.of(post, hashtag.trim()));
-        }
-
-        // 소비 내역 저장
-        for(WalletReq wallet : postReq.getWalletList()) {
-            walletRepository.save(Wallet.of(memberId, post,
-                    SetTime.stringToLocalDate(wallet.getConsumedDate()), wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType()));
-        }
+        // 해시태그, 소비 내역을 새롭게 저장
+        updateHashtag(postReq.getHashtagList(), post);
+        updateWallet(postReq.getWalletList(), post);
 
         return new PostPostRes(post.getId());
     }
@@ -309,8 +306,6 @@ public class PostService {
 
         // 블로그 예외 처리
         blogValidationByMemberId(memberId);
-
-        // TODO : 대표 해시태그 적용
 
         // 기존 글을 불러와서 수정함
         Post post = postRepository.findByIdAndPostState(postId, PostState.ACTIVE)

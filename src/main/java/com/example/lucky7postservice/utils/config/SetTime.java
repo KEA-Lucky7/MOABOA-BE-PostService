@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.utils.config;
 
+
 import org.springframework.cglib.core.Local;
 
 import java.sql.Date;
@@ -30,5 +31,10 @@ public class SetTime {
     public static LocalDate getMonthEnd(String month) {
         LocalDate startDate = getMonthStart(month);
         return startDate.plusMonths(1);
+    }
+
+    public static boolean specificDateValidation(LocalDate specificDate) {
+        LocalDate today = LocalDate.now();
+        return !specificDate.isAfter(today);
     }
 }

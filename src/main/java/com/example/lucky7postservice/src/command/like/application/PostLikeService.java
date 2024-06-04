@@ -9,7 +9,6 @@ import com.example.lucky7postservice.src.command.like.domain.repository.PostLike
 import com.example.lucky7postservice.src.command.post.domain.Post;
 import com.example.lucky7postservice.src.command.post.domain.PostState;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
-import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
 import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
 import com.example.lucky7postservice.src.query.repository.MemberQueryRepository;
 import com.example.lucky7postservice.src.query.repository.PostQueryRepository;

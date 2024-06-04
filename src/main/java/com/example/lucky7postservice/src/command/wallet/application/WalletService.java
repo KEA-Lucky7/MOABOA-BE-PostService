@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.src.command.wallet.application;
 
+import com.example.lucky7postservice.src.auth.AuthServiceClient;
 import com.example.lucky7postservice.src.command.wallet.api.dto.ConsumedRes;
 import com.example.lucky7postservice.src.command.wallet.api.dto.GetCalenderRes;
 import com.example.lucky7postservice.src.query.repository.BlogQueryRepository;
@@ -23,21 +24,17 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class WalletService {
     private final WalletQueryRepository walletQueryRepository;
+
     private final MemberQueryRepository memberQueryRepository;
+    private final AuthServiceClient authServiceClient;
+    private Long memberId = 1L;
+
     private final BlogQueryRepository blogQueryRepository;
 
     /* 캘린더 반환 */
     public GetCalenderRes getCalender(String month, String specificDate) throws BaseException {
-        Long memberId = 1L;
-
-        // 멤버 존재 여부 확인
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
-
-        // 블로그 존재 여부 확인
-        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
-
+        // 멤버 예외 처리
+        memberId = userAndBlogValidation();
 
         LocalDate start = SetTime.getMonthStart(month);
         LocalDate end = SetTime.getMonthEnd(month);
@@ -58,5 +55,19 @@ public class WalletService {
         List<ConsumedRes> consumedList = walletQueryRepository.findAllByMemberIdAndStateAndConsumedDate(memberId, start, end);
         return new GetCalenderRes(memberId,
                 specificAmount, monthAmount, totalAmount, consumedList);
+    }
+
+    /* 멤버, 블로그 예외 처리 */
+    public Long userAndBlogValidation() throws BaseException {
+        // 멤버 예외 처리
+        memberId = authServiceClient.validateToken().getBody();
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        // 블로그 예외 처리
+        blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_BLOG));
+
+        return memberId;
     }
 }

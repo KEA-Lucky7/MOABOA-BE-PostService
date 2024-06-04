@@ -33,7 +33,10 @@ public class PostController {
     })
     @GetMapping("/home-list")
     public ResponseEntity<List<GetHomePostsRes>> getHomePosts(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
-        return new ResponseEntity<>(postService.getHomePosts(page, pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.getHomePosts(page, pageSize),
+                HttpStatus.OK
+        );
     }
 
     /* 블로그 글 목록 조회 (필터링) API */
@@ -47,7 +50,10 @@ public class PostController {
     })
     @GetMapping("/{blogId}/hashtag-list")
     public ResponseEntity<GetHashtagsRes> getHashtags(@PathVariable("blogId") Long blogId) throws BaseException {
-        return new ResponseEntity<>(postService.getHashtags(blogId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.getHashtags(blogId),
+                HttpStatus.OK
+        );
     }
 
     /* 블로그 글 목록 조회 (필터링) API */
@@ -61,10 +67,10 @@ public class PostController {
     })
     @GetMapping("/{blogId}/post-list")
     public ResponseEntity<GetBlogPostsRes> getBlogPosts(@RequestParam("page") int page, @PathVariable("blogId") Long blogId, @RequestParam("postType") String postType, @RequestParam("hashtag") String hashtag) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.getBlogPosts(page, blogId, postType, hashtag),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.getBlogPosts(page, blogId, postType, hashtag),
+                HttpStatus.OK
+        );
     }
 
     /* 글 작성하기 API */
@@ -81,10 +87,10 @@ public class PostController {
     })
     @PostMapping("/{postId}")
     public ResponseEntity<PostPostRes> postPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq postReq) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.postPost(postId, postReq),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.postPost(postId, postReq),
+                HttpStatus.OK
+        );
     }
 
     /* 글 임시 저장하기 API */
@@ -102,10 +108,10 @@ public class PostController {
             })
     @PostMapping("/temp/{postId}")
     public ResponseEntity<PostPostRes> savePost(@PathVariable Long postId, @Valid @RequestBody PostSavedPostReq postReq) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.savePost(postId, postReq),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.savePost(postId, postReq),
+                HttpStatus.OK
+        );
     }
 
     /* 글 임시 저장 목록 조회 API */
@@ -122,10 +128,10 @@ public class PostController {
     })
     @GetMapping("/temp-list")
     public ResponseEntity<List<GetSavedPostsRes>> getSavedPosts() throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.getSavedPosts(),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.getSavedPosts(),
+                HttpStatus.OK
+        );
     }
 
     /* 임시 저장한 글 상세 조회 API */
@@ -143,10 +149,10 @@ public class PostController {
     })
     @GetMapping("/temp/{postId}")
     public ResponseEntity<GetSavedPostRes> getSavedPosts(@PathVariable("postId") Long postId) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.getSavedPost(postId),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.getSavedPost(postId),
+                HttpStatus.OK
+        );
     }
 
     /* 글 상세 조회 API */
@@ -164,9 +170,9 @@ public class PostController {
     })
     @GetMapping("/{postId}")
     public ResponseEntity<GetPostRes> getPost(@PathVariable("postId") Long postId) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.getPost(postId), HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.getPost(postId), HttpStatus.OK
+        );
     }
 
     /* 글 삭제하기 API */
@@ -184,10 +190,10 @@ public class PostController {
     })
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Long postId) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.deletePost(postId),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.deletePost(postId),
+                HttpStatus.OK
+        );
     }
 
     /* 글 수정하기 API */
@@ -205,9 +211,9 @@ public class PostController {
     })
     @PatchMapping("/{postId}")
     public ResponseEntity<PostPostRes> modifyPost(@PathVariable Long postId, @Valid @RequestBody PostPostReq patchReq) throws BaseException {
-        // TODO : Authorization에서 jwt 추출하기
-
-        return new ResponseEntity<>(postService.modifyPost(postId, patchReq),
-                HttpStatus.OK);
+        return new ResponseEntity<>(
+                postService.modifyPost(postId, patchReq),
+                HttpStatus.OK
+        );
     }
 }

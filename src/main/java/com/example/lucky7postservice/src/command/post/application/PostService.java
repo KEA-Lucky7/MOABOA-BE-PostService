@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.src.command.post.application;
 
+import com.example.lucky7postservice.src.auth.AuthServiceClient;
 import com.example.lucky7postservice.src.command.comment.domain.Comment;
 import com.example.lucky7postservice.src.command.comment.domain.Reply;
 import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
@@ -39,6 +40,9 @@ public class PostService {
     private final PostLikeRepository likeRepository;
 
     private final MemberQueryRepository memberQueryRepository;
+    private final AuthServiceClient authServiceClient;
+    private Long memberId = 1L;
+
     private final BlogQueryRepository blogQueryRepository;
     private final PostQueryRepository postQueryRepository;
     private final HashtagQueryRepository hashtagQueryRepository;
@@ -94,10 +98,8 @@ public class PostService {
     /* 글 저장 */
     @Transactional
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버 예외 처리
+        memberId = userValidation();
 
         // 블로그 존재 여부 확인
         QueryBlog queryBlog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
@@ -142,10 +144,8 @@ public class PostService {
     /* 글 임시 저장 */
     @Transactional
     public PostPostRes savePost(Long postId, PostSavedPostReq postReq) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버 예외 처리
+        memberId = userValidation();
 
         // 블로그 존재 여부 확인
         QueryBlog queryBlog = blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
@@ -180,10 +180,8 @@ public class PostService {
 
     /* 임시 저장 목록 조회 */
     public List<GetSavedPostsRes> getSavedPosts() throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버 예외 처리
+        memberId = userValidation();
 
         // 블로그 존재 여부 확인
         blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
@@ -194,10 +192,8 @@ public class PostService {
 
     /* 임시 저장한 글 상세 조회 */
     public GetSavedPostRes getSavedPost(Long postId) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버 예외 처리
+        memberId = userValidation();
 
         // 블로그 존재 여부 확인
         blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
@@ -226,10 +222,8 @@ public class PostService {
 
     /* 글 상세 조회 */
     public GetPostRes getPost(Long postId) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버 예외 처리
+        memberId = userValidation();
 
         // 게시물 존재 여부 확인
         PostRes postRes = postQueryRepository.findByPostIdAndState(postId, memberId)
@@ -285,10 +279,8 @@ public class PostService {
     /* 글 삭제 */
     @Transactional
     public String deletePost(Long postId) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버 예외 처리
+        memberId = userValidation();
 
         // 블로그 존재 여부 확인
         blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
@@ -321,10 +313,8 @@ public class PostService {
     /* 글 수정 */
     @Transactional
     public PostPostRes modifyPost(Long postId, PostPostReq postReq) throws BaseException {
-        // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
-        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
-                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+        // 멤버 예외 처리
+        memberId = userValidation();
 
         // 블로그 존재 여부 확인
         blogQueryRepository.findByMemberIdAndState(memberId, State.ACTIVE)
@@ -376,5 +366,15 @@ public class PostService {
                             SetTime.stringToLocalDate(wallet.getConsumedDate()), wallet.getMemo().trim(), wallet.getAmount(), wallet.getWalletType())
             );
         }
+    }
+
+    /* 멤버 예외 처리 */
+    public Long userValidation() throws BaseException {
+        // 멤버 예외 처리
+        memberId = authServiceClient.validateToken().getBody();
+        memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
+                .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
+
+        return memberId;
     }
 }

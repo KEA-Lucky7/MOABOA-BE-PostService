@@ -87,5 +87,5 @@ debezium:
       filename: /tmp/dbhistory.dat
     kafka:
       bootstrap:
-        servers: localhost:9092
+        servers: ${KAFKA-BROKER}
       topic: test-debezium-connector

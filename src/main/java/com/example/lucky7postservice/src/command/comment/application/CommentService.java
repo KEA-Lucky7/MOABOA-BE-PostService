@@ -1,5 +1,6 @@
 package com.example.lucky7postservice.src.command.comment.application;
 
+import com.example.lucky7postservice.src.command.auth.AuthServiceClient;
 import com.example.lucky7postservice.src.command.comment.domain.Comment;
 import com.example.lucky7postservice.src.command.comment.domain.Reply;
 import com.example.lucky7postservice.src.command.comment.domain.repository.CommentRepository;
@@ -16,8 +17,10 @@ import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +31,16 @@ public class CommentService {
     private final ReplyRepository replyRepository;
     private final MemberQueryRepository memberQueryRepository;
 
+    private final AuthServiceClient authServiceClient;
+    private Long memberId = 1L;
+
     /* 댓글 달기 API */
     @Transactional
     public PostCommentRes comment(Long postId, PostCommentReq commentReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
+        ResponseEntity<Long> getMemberId = authServiceClient.validateToken();
+        memberId = getMemberId.getBody();
+
         memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
@@ -49,7 +57,7 @@ public class CommentService {
     @Transactional
     public String modifyComment(Long postId, Long commentId, PostCommentReq commentReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
+        memberId = 1L;
         memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
@@ -69,7 +77,7 @@ public class CommentService {
     @Transactional
     public String deleteComment(Long postId, Long commentId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
+        memberId = 1L;
         memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
@@ -89,7 +97,7 @@ public class CommentService {
     @Transactional
     public PostReplyRes reply(Long postId, Long commentId, PostReplyReq replyReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
+        memberId = 1L;
         memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
@@ -111,7 +119,7 @@ public class CommentService {
     @Transactional
     public String modifyReply(Long postId, Long commentId, Long replyId, PostReplyReq postReplyReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
+        memberId = 1L;
         memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
@@ -137,7 +145,7 @@ public class CommentService {
     @Transactional
     public String deleteReply(Long postId, Long commentId, Long replyId) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        Long memberId = 1L;
+        memberId = 1L;
         memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 

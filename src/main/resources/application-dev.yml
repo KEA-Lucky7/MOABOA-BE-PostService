@@ -28,7 +28,7 @@ spring:
         show_sql: false
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA-BROKER}
 
 management:
   endpoints:

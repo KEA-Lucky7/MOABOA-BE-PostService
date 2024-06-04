@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: Lucky7-PostService
+    name: post-service
 
 # Database
   datasource:

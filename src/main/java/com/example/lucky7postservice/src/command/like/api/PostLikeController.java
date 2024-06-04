@@ -97,6 +97,7 @@ public class PostLikeController {
             @ApiResponse(responseCode = "GLB-ERR-001", description = "잘못된 요청입니다."),
             @ApiResponse(responseCode = "GLB-ERR-005", description = "입력값이 잘못되었습니다."),
             @ApiResponse(responseCode = "GLB-ERR-006", description = "존재하지 않는 유저입니다."),
+            @ApiResponse(responseCode = "GLB-ERR-007", description = "존재하지 않는 블로그입니다."),
             @ApiResponse(responseCode = "GLB-ERR-008", description = "존재하지 않는 글입니다.")
     })
     @PatchMapping("/like-list")

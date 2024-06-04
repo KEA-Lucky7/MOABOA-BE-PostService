@@ -30,15 +30,15 @@ public class CommentService {
     private final ReplyRepository replyRepository;
     private final MemberQueryRepository memberQueryRepository;
 
-    private final AuthServiceClient authServiceClient;
+//    private final AuthServiceClient authServiceClient;
     private Long memberId = 1L;
 
     /* 댓글 달기 API */
     @Transactional
     public PostCommentRes comment(Long postId, PostCommentReq commentReq) throws BaseException {
         // TODO : 멤버 아이디 추출 후 예외 처리 적용
-        ResponseEntity<Long> getMemberId = authServiceClient.validateToken();
-        memberId = getMemberId.getBody();
+//        ResponseEntity<Long> getMemberId = authServiceClient.validateToken();
+//        memberId = getMemberId.getBody();
 
         memberQueryRepository.findByIdAndState(memberId, State.ACTIVE)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));

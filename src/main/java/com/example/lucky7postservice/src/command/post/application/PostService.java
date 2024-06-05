@@ -189,7 +189,7 @@ public class PostService {
         blogValidationByMemberId(memberId);
 
         // 게시물 존재 여부 확인
-        QueryPost post = postQueryRepository.findByIdAndPostState(postId, PostState.ACTIVE)
+        QueryPost post = postQueryRepository.findByIdAndPostState(postId, PostState.TEMPORARY)
                 .orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_POST));
 
         List<String> hashtagList = hashtagQueryRepository.findAllByPostId(postId);

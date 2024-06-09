@@ -19,14 +19,23 @@ import com.example.lucky7postservice.utils.config.BaseException;
 import com.example.lucky7postservice.utils.config.BaseResponseStatus;
 import com.example.lucky7postservice.utils.config.SetTime;
 import com.example.lucky7postservice.utils.entity.State;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -50,6 +59,10 @@ public class PostService {
     private final WalletQueryRepository walletQueryRepository;
     private final CommentQueryRepository commentQueryRepository;
     private final ReplyQueryRepository replyQueryRepository;
+
+    private final RestTemplate restTemplate;
+    @Value("${rest-template.url}")
+    private String feedbackUrl;
 
     /* 홈 화면 글 목록 반환 (좋아요순) */
     public List<GetHomePostsRes> getHomePosts(int page, int pageSize) {
@@ -98,7 +111,7 @@ public class PostService {
     @Transactional
     public PostPostRes postPost(Long postId, PostPostReq postReq) throws BaseException {
         // 멤버 예외 처리
-        memberId = userValidation();
+//        memberId = userValidation();
 
         // 블로그 예외 처리
         QueryBlog queryBlog = blogValidationByMemberId(memberId);
@@ -129,6 +142,9 @@ public class PostService {
         // 해시태그, 소비 내역을 새롭게 저장
         updateHashtag(postReq.getHashtagList(), post);
         updateWallet(postReq.getWalletList(), post);
+
+        // 소비 내역 피드백 생성
+        createFeedback(post.getId(), postReq.getWalletList());
 
         return new PostPostRes(post.getId());
     }
@@ -323,6 +339,32 @@ public class PostService {
         updateWallet(postReq.getWalletList(), post);
 
         return new PostPostRes(post.getId());
+    }
+
+    /* 블로그 피드백 생성 */
+    public void createFeedback(Long postId, List<WalletReq> walletList) {
+        List<ConsumptionReq> consumptionList = walletList.stream()
+                .map(d -> ConsumptionReq.builder()
+                        .name(d.getMemo())
+                        .category(d.getWalletType())
+                        .cost(d.getAmount())
+                        .date(SetTime.dateFormat(d.getConsumedDate()))
+                        .build())
+                .toList();
+
+        RequestEntity<PostFeedbackReq> req = RequestEntity
+                .post(feedbackUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new PostFeedbackReq(postId, consumptionList));
+
+        try {
+            ResponseEntity<GetFeedbackRes> res = restTemplate.exchange(req, GetFeedbackRes.class);
+
+            String feedback = Objects.requireNonNull(res.getBody()).getFeedback();
+            log.debug(feedback);
+        } catch (RestClientException exception) {
+            log.debug("피드백이 제대로 생성되지 않았습니다.");
+        }
     }
 
     /* 해시태그, 소비 내역 삭제 */

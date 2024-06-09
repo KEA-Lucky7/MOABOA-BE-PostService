@@ -89,3 +89,6 @@ debezium:
       bootstrap:
         servers: ${KAFKA-BROKER}
       topic: test-debezium-connector
+
+rest-template:
+  url: ${FEEDBACK-ADDRESS}

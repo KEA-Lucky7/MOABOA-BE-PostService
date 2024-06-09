@@ -90,3 +90,6 @@ debezium:
       bootstrap:
         servers: localhost:9092
       topic: test-debezium-connector
+
+rest-template:
+  url: ${FEEDBACK-ADDRESS}

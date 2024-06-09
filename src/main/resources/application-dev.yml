@@ -36,6 +36,9 @@ management:
       exposure:
         include: health
       base-path: /posts/
+  metrics:
+    enable:
+      jvm: true
 
 # Log
 #logging:

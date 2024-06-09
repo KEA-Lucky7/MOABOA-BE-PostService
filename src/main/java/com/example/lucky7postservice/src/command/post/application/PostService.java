@@ -364,7 +364,7 @@ public class PostService {
             ResponseEntity<GetFeedbackRes> res = restTemplate.exchange(req, GetFeedbackRes.class);
 
             String feedback = Objects.requireNonNull(res.getBody()).getFeedback();
-            log.info(feedback);
+            log.debug(feedback);
         } catch (RestClientException exception) {
             log.debug("피드백이 제대로 생성되지 않았습니다.");
         }

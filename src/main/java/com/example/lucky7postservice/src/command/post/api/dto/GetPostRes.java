@@ -25,6 +25,8 @@ public class GetPostRes {
     private String title;
     @Schema(description = "게시물 내용", example = "")
     private String content;
+    @Schema(description = "소비내역 피드백", example = "너는 소비를 정말 많이 했구나~!")
+    private String feedback;
     @Schema(description = "게시물 미리보기", example = "미리보기")
     private String preview;
     @Schema(description = "게시물 썸네일", example = "사진 절대 경로")

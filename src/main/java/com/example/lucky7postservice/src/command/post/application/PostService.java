@@ -228,7 +228,7 @@ public class PostService {
     /* 글 상세 조회 */
     public GetPostRes getPost(Long postId) throws BaseException {
         // 멤버 예외 처리
-        memberId = userValidation();
+//        memberId = userValidation();
 
         // 게시물 존재 여부 확인
         PostRes postRes = postQueryRepository.findByPostIdAndState(postId, memberId)
@@ -366,8 +366,14 @@ public class PostService {
         try {
             ResponseEntity<GetFeedbackRes> res = restTemplate.exchange(req, GetFeedbackRes.class);
 
+            if(res.getStatusCode() == HttpStatusCode.valueOf(400) || res.getStatusCode() == HttpStatusCode.valueOf(404)) {
+                log.debug("피드백이 생성되지 않았습니다");
+            }
+
             String feedback = Objects.requireNonNull(res.getBody()).getFeedback();
             log.debug(feedback);
+
+
         } catch (RestClientException exception) {
             log.debug("피드백이 제대로 생성되지 않았습니다.");
         }
@@ -389,6 +395,10 @@ public class PostService {
                     HttpMethod.GET,
                     entity,
                     GetFeedbackRes.class);
+
+            if(res.getStatusCode() == HttpStatusCode.valueOf(400) || res.getStatusCode() == HttpStatusCode.valueOf(404)) {
+                return "피드백이 생성되지 않았습니다";
+            }
 
             String feedback = Objects.requireNonNull(res.getBody()).getFeedback();
             log.debug(feedback);

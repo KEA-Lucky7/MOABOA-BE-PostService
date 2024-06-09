@@ -38,6 +38,9 @@ management:
       exposure:
         include: health
       base-path: /posts/
+  metrics:
+    enable:
+      jvm: true
 
 # Log
 #logging:
@@ -90,3 +93,6 @@ debezium:
       bootstrap:
         servers: localhost:9092
       topic: test-debezium-connector
+
+rest-template:
+  url: ${FEEDBACK-ADDRESS}

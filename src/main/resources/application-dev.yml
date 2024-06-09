@@ -36,6 +36,9 @@ management:
       exposure:
         include: health
       base-path: /posts/
+  metrics:
+    enable:
+      jvm: true
 
 # Log
 #logging:
@@ -89,3 +92,6 @@ debezium:
       bootstrap:
         servers: ${KAFKA-BROKER}
       topic: test-debezium-connector
+
+rest-template:
+  url: ${FEEDBACK-ADDRESS}

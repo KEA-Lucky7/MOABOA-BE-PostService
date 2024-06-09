@@ -17,6 +17,10 @@ public class SetTime {
         return format.format(date);
     }
 
+    public static String dateFormat(String date) {
+        return date.replaceAll("\\.", "-");
+    }
+
     public static LocalDate stringToLocalDate(String date) {
         date = date.replace('.', '-');
         return LocalDate.parse(date, DateTimeFormatter.ISO_DATE);

@@ -7,11 +7,14 @@ import com.example.lucky7postservice.src.command.comment.domain.repository.Comme
 import com.example.lucky7postservice.src.command.comment.domain.repository.ReplyRepository;
 import com.example.lucky7postservice.src.command.like.domain.repository.PostLikeRepository;
 import com.example.lucky7postservice.src.command.post.api.dto.*;
-import com.example.lucky7postservice.src.command.post.domain.*;
+import com.example.lucky7postservice.src.command.post.domain.Hashtag;
+import com.example.lucky7postservice.src.command.post.domain.Post;
+import com.example.lucky7postservice.src.command.post.domain.PostState;
+import com.example.lucky7postservice.src.command.post.domain.PostType;
 import com.example.lucky7postservice.src.command.post.domain.repository.HashtagRepository;
 import com.example.lucky7postservice.src.command.post.domain.repository.PostRepository;
-import com.example.lucky7postservice.src.command.wallet.domain.repository.WalletRepository;
 import com.example.lucky7postservice.src.command.wallet.domain.Wallet;
+import com.example.lucky7postservice.src.command.wallet.domain.repository.WalletRepository;
 import com.example.lucky7postservice.src.query.entity.blog.QueryBlog;
 import com.example.lucky7postservice.src.query.entity.post.QueryPost;
 import com.example.lucky7postservice.src.query.repository.*;
@@ -21,12 +24,18 @@ import com.example.lucky7postservice.utils.config.SetTime;
 import com.example.lucky7postservice.utils.entity.State;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -50,6 +59,10 @@ public class PostService {
     private final WalletQueryRepository walletQueryRepository;
     private final CommentQueryRepository commentQueryRepository;
     private final ReplyQueryRepository replyQueryRepository;
+
+    private final RestTemplate restTemplate;
+    @Value("${rest-template.url}")
+    private String feedbackUrl;
 
     /* 홈 화면 글 목록 반환 (좋아요순) */
     public List<GetHomePostsRes> getHomePosts(int page, int pageSize) {
@@ -129,6 +142,9 @@ public class PostService {
         // 해시태그, 소비 내역을 새롭게 저장
         updateHashtag(postReq.getHashtagList(), post);
         updateWallet(postReq.getWalletList(), post);
+
+        // 소비 내역 피드백 생성
+        createFeedback(post.getId(), postReq.getWalletList());
 
         return new PostPostRes(post.getId());
     }
@@ -241,6 +257,8 @@ public class PostService {
         List<PrevPostsRes> prevPostList = postQueryRepository.findAllPrevPostByPostIdAndPostState(postId, postMemberId);
         prevPostList.addAll(postQueryRepository.findAllNextPostByPostIdAndPostState(postId, postMemberId));
 
+        String feedback = getFeedback(postRes.getPostId());
+
         return GetPostRes.builder()
                 .postId(postRes.getPostId())
                 .memberId(postRes.getMemberId())
@@ -249,6 +267,7 @@ public class PostService {
                 .about(postRes.getAbout())
                 .title(postRes.getTitle())
                 .content(postRes.getContent())
+                .feedback(feedback)
                 .preview(postRes.getPreview())
                 .thumbnail(postRes.getThumbnail())
                 .postType(postRes.getPostType())
@@ -322,7 +341,64 @@ public class PostService {
         updateHashtag(postReq.getHashtagList(), post);
         updateWallet(postReq.getWalletList(), post);
 
+        // 소비 내역 피드백 생성
+        createFeedback(post.getId(), postReq.getWalletList());
+
         return new PostPostRes(post.getId());
+    }
+
+    /* 블로그 피드백 생성 */
+    public void createFeedback(Long postId, List<WalletReq> walletList) {
+        List<ConsumptionReq> consumptionList = walletList.stream()
+                .map(d -> ConsumptionReq.builder()
+                        .name(d.getMemo())
+                        .category(d.getWalletType())
+                        .cost(d.getAmount())
+                        .date(SetTime.dateFormat(d.getConsumedDate()))
+                        .build())
+                .toList();
+
+        RequestEntity<PostFeedbackReq> req = RequestEntity
+                .post(feedbackUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new PostFeedbackReq(postId, consumptionList));
+
+        try {
+            ResponseEntity<GetFeedbackRes> res = restTemplate.exchange(req, GetFeedbackRes.class);
+
+            String feedback = Objects.requireNonNull(res.getBody()).getFeedback();
+            log.debug(feedback);
+        } catch (RestClientException exception) {
+            log.debug("피드백이 제대로 생성되지 않았습니다.");
+        }
+    }
+
+    /* 블로그 피드백 조회 */
+    public String getFeedback(Long postId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(feedbackUrl)
+                .queryParam("post_id", postId);
+
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<GetFeedbackRes> res = restTemplate.exchange(
+                    builder.toUriString(),
+                    HttpMethod.GET,
+                    entity,
+                    GetFeedbackRes.class);
+
+            String feedback = Objects.requireNonNull(res.getBody()).getFeedback();
+            log.debug(feedback);
+
+            return feedback;
+        } catch (RestClientException exception) {
+            log.debug("피드백이 제대로 생성되지 않았습니다.");
+        }
+
+        return "피드백이 생성되지 않았습니다";
     }
 
     /* 해시태그, 소비 내역 삭제 */
